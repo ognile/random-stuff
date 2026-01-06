@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gut Health Assessment | Nuora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #FAFAFA;
+      --surface: #FFFFFF;
+      --text: #1a1a1a;
+      --text-secondary: #6b6b6b;
+      --text-muted: #9a9a9a;
+      --accent: #2D5A45;
+      --accent-light: #E8F0EC;
+      --border: #E8E8E8;
+      --success: #2D5A45;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-full: 9999px;
+    }
+
+    html {
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .funnel-container {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--surface);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .back-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: var(--bg);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .back-btn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-btn:hover {
+      background: var(--border);
+    }
+
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--text);
+    }
+
+    .progress-wrapper {
+      flex: 1;
+      max-width: 200px;
+      margin: 0 16px;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    .step-counter {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      min-width: 44px;
+      text-align: right;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 32px 24px;
+      overflow-y: auto;
+    }
+
+    .step {
+      display: none;
+      animation: fadeSlideIn 0.4s ease forwards;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .step-header {
+      margin-bottom: 32px;
+    }
+
+    .step-eyebrow {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .step-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.75rem;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .step-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Selection Cards */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-card {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      gap: 16px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-card:hover {
+      border-color: var(--text-muted);
+    }
+
+    .option-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .option-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.5rem;
+    }
+
+    .option-card.selected .option-icon {
+      background: var(--surface);
+    }
+
+    .option-content {
+      flex: 1;
+    }
+
+    .option-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .option-description {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .option-check {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .option-card.selected .option-check {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .option-check svg {
+      width: 14px;
+      height: 14px;
+      stroke: white;
+      stroke-width: 3;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s ease;
+    }
+
+    .option-card.selected .option-check svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Multi-select cards */
+    .multi-select .option-card.selected {
+      border-color: var(--accent);
+    }
+
+    .multi-hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Empathy/Info Screens */
+    .info-card {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #F0F7F4 100%);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 24px;
+    }
+
+    .info-stat {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .info-text {
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .mini-testimonial {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .mini-testimonial-quote {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .mini-testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mini-testimonial-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #E8D5B7 0%, #D4C4A8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .mini-testimonial-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .mini-testimonial-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Analysis Screen */
+    .analysis-screen {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .analysis-visual {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 32px;
+      position: relative;
+    }
+
+    .analysis-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-full);
+      border: 3px solid var(--border);
+      position: relative;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
+    .analysis-circle::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: var(--radius-full);
+      border: 2px dashed var(--accent);
+      opacity: 0.3;
+      animation: spin 20s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .analysis-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+    }
+
+    .analysis-progress {
+      margin: 24px 0;
+    }
+
+    .analysis-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .analysis-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .analysis-status {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .analysis-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    .analysis-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .analysis-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .analysis-item-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-full);
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .analysis-item-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: white;
+    }
+
+    .analysis-item-text {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* Results Screen */
+    .results-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+
+    .score-circle svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .score-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+
+    .score-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 408;
+      stroke-dashoffset: 408;
+      transition: stroke-dashoffset 1.5s ease-out;
+    }
+
+    .score-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .score-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .results-summary {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .summary-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .summary-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Doctor Card */
+    .doctor-card {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+    }
+
+    .doctor-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .doctor-info {
+      flex: 1;
+    }
+
+    .doctor-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .doctor-title {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .doctor-quote {
+      font-size: 0.9rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    /* Testimonials */
+    .testimonials-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .testimonial-stars {
+      color: #F59E0B;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+
+    .testimonial-text {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #E8D5B7 0%, #D4C4A8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .testimonial-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .testimonial-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--accent-light);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* Trust Badges */
+    .trust-section {
+      margin-top: 24px;
+    }
+
+    .trust-badges {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+    }
+
+    .trust-badge-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .trust-badge-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--accent);
+    }
+
+    .trust-badge-text {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .guarantee-card {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #F0F7F4 100%);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .guarantee-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      background: var(--surface);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .guarantee-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .guarantee-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Final CTA */
+    .final-cta-section {
+      text-align: center;
+    }
+
+    .final-summary {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .final-summary-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .final-summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .final-summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .final-summary-item svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .social-proof-mini {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .avatar-stack {
+      display: flex;
+    }
+
+    .avatar-stack-item {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--surface);
+      background: linear-gradient(135deg, #E8D5B7 0%, #D4C4A8 100%);
+      margin-left: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .avatar-stack-item:first-child {
+      margin-left: 0;
+    }
+
+    .social-proof-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .social-proof-text strong {
+      color: var(--text);
+    }
+
+    /* Footer / CTA */
+    .footer {
+      padding: 16px 24px 32px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .cta-btn {
+      width: 100%;
+      padding: 18px 32px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cta-btn:hover {
+      background: #234A38;
+      transform: translateY(-1px);
+    }
+
+    .cta-btn:active {
+      transform: translateY(0);
+    }
+
+    .cta-btn:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .cta-btn.pulse {
+      animation: btnPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(45, 90, 69, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(45, 90, 69, 0); }
+    }
+
+    .footer-hint {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .footer-hint svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--text-muted);
+    }
+
+    /* Privacy Badge */
+    .privacy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--bg);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .privacy-badge svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--accent);
+    }
+
+    /* Animations */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Counter animation */
+    .counter {
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="funnel-container">
+    <!-- Header -->
+    <header class="header">
+      <button class="back-btn" id="backBtn" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div class="progress-wrapper">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+      <span class="step-counter" id="stepCounter">1 of 15</span>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+
+      <!-- Step 1: Hook -->
+      <section class="step active" data-step="1">
+        <div class="step-header">
+          <div class="step-eyebrow">Quick Assessment</div>
+          <h1 class="step-title">Are digestive issues affecting your quality of life?</h1>
+          <p class="step-subtitle">Take 2 minutes to discover what's really going on with your gut health.</p>
+        </div>
+        <div class="privacy-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Your answers are private & secure
+        </div>
+        <div class="options-list" data-single="true">
+          <div class="option-card" data-value="yes">
+            <div class="option-icon">✓</div>
+            <div class="option-content">
+              <div class="option-label">Yes, they are</div>
+              <div class="option-description">I deal with discomfort regularly</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="sometimes">
+            <div class="option-icon">~</div>
+            <div class="option-content">
+              <div class="option-label">Sometimes</div>
+              <div class="option-description">It comes and goes</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="curious">
+            <div class="option-icon">?</div>
+            <div class="option-content">
+              <div class="option-label">I'm just curious</div>
+              <div class="option-description">Want to learn more about gut health</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2: Symptoms -->
+      <section class="step" data-step="2">
+        <div class="step-header">
+          <div class="step-eyebrow">Understanding You</div>
+          <h1 class="step-title">Which of these do you experience?</h1>
+          <p class="step-subtitle">Select all that apply to you.</p>
+        </div>
+        <p class="multi-hint">Tap all that apply</p>
+        <div class="options-list multi-select" data-multi="true">
+          <div class="option-card" data-value="bloating">
+            <div class="option-icon">🎈</div>
+            <div class="option-content">
+              <div class="option-label">Bloating</div>
+              <div class="option-description">Uncomfortable fullness or swelling</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="irregular">
+            <div class="option-icon">📅</div>
+            <div class="option-content">
+              <div class="option-label">Irregular bowel movements</div>
+              <div class="option-description">Unpredictable or inconsistent</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="fatigue">
+            <div class="option-icon">😴</div>
+            <div class="option-content">
+              <div class="option-label">Low energy or fatigue</div>
+              <div class="option-description">Feeling tired despite rest</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="discomfort">
+            <div class="option-icon">💫</div>
+            <div class="option-content">
+              <div class="option-label">Stomach discomfort</div>
+              <div class="option-description">Cramping, pain, or unease</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="brainfog">
+            <div class="option-icon">🌫️</div>
+            <div class="option-content">
+              <div class="option-label">Brain fog</div>
+              <div class="option-description">Difficulty concentrating or thinking clearly</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: Duration -->
+      <section class="step" data-step="3">
+        <div class="step-header">
+          <div class="step-eyebrow">Your History</div>
+          <h1 class="step-title">How long have you been experiencing these issues?</h1>
+        </div>
+        <div class="options-list" data-single="true">
+          <div class="option-card" data-value="recent">
+            <div class="option-icon">📆</div>
+            <div class="option-content">
+              <div class="option-label">Less than 6 months</div>
+              <div class="option-description">This is relatively new for me</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="moderate">
+            <div class="option-icon">📅</div>
+            <div class="option-content">
+              <div class="option-label">6 months to 2 years</div>
+              <div class="option-description">It's been going on for a while</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="long">
+            <div class="option-icon">🗓️</div>
+            <div class="option-content">
+              <div class="option-label">2 to 5 years</div>
+              <div class="option-description">I've dealt with this for years</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="chronic">
+            <div class="option-icon">⏳</div>
+            <div class="option-content">
+              <div class="option-label">More than 5 years</div>
+              <div class="option-description">It's become part of my life</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4: Failed Solutions -->
+      <section class="step" data-step="4">
+        <div class="step-header">
+          <div class="step-eyebrow">Your Journey</div>
+          <h1 class="step-title">What have you already tried?</h1>
+          <p class="step-subtitle">Select all that apply.</p>
+        </div>
+        <p class="multi-hint">Tap all that apply</p>
+        <div class="options-list multi-select" data-multi="true">
+          <div class="option-card" data-value="probiotics">
+            <div class="option-icon">💊</div>
+            <div class="option-content">
+              <div class="option-label">Probiotics</div>
+              <div class="option-description">Store-bought supplements</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="diet">
+            <div class="option-icon">🥗</div>
+            <div class="option-content">
+              <div class="option-label">Diet changes</div>
+              <div class="option-description">Eliminating foods, eating cleaner</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="medication">
+            <div class="option-icon">💉</div>
+            <div class="option-content">
+              <div class="option-label">Medications</div>
+              <div class="option-description">Prescription or over-the-counter</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="nothing">
+            <div class="option-icon">🤷</div>
+            <div class="option-content">
+              <div class="option-label">Nothing yet</div>
+              <div class="option-description">Haven't found the right solution</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 5: Empathy -->
+      <section class="step" data-step="5">
+        <div class="step-header">
+          <h1 class="step-title">You're not alone in this.</h1>
+        </div>
+        <div class="info-card">
+          <div class="info-stat">68%</div>
+          <p class="info-text">of women over 60 experience digestive issues that impact their daily life. Most have tried multiple solutions without lasting relief.</p>
+        </div>
+        <div class="mini-testimonial">
+          <p class="mini-testimonial-quote">"I spent 8 years thinking this was just 'part of getting older.' Turns out, I was wrong."</p>
+          <div class="mini-testimonial-author">
+            <div class="mini-testimonial-avatar">👩‍🦳</div>
+            <div>
+              <div class="mini-testimonial-name">Barbara H.</div>
+              <div class="mini-testimonial-meta">Age 69, Austin TX</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 6: Goals -->
+      <section class="step" data-step="6">
+        <div class="step-header">
+          <div class="step-eyebrow">Your Goals</div>
+          <h1 class="step-title">What matters most to you?</h1>
+          <p class="step-subtitle">Choose the outcome that would make the biggest difference.</p>
+        </div>
+        <div class="options-list" data-single="true">
+          <div class="option-card" data-value="energy">
+            <div class="option-icon">⚡</div>
+            <div class="option-content">
+              <div class="option-label">More energy</div>
+              <div class="option-description">Feel vibrant and active again</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="regularity">
+            <div class="option-icon">✅</div>
+            <div class="option-content">
+              <div class="option-label">Regularity</div>
+              <div class="option-description">Predictable, comfortable digestion</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="comfort">
+            <div class="option-icon">😌</div>
+            <div class="option-content">
+              <div class="option-label">Less discomfort</div>
+              <div class="option-description">No more bloating or pain</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="confidence">
+            <div class="option-icon">💪</div>
+            <div class="option-content">
+              <div class="option-label">Confidence</div>
+              <div class="option-description">Live without worry or planning around symptoms</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 7: Lifestyle -->
+      <section class="step" data-step="7">
+        <div class="step-header">
+          <div class="step-eyebrow">Lifestyle</div>
+          <h1 class="step-title">How would you describe your diet?</h1>
+        </div>
+        <div class="options-list" data-single="true">
+          <div class="option-card" data-value="healthy">
+            <div class="option-icon">🥬</div>
+            <div class="option-content">
+              <div class="option-label">Pretty healthy</div>
+              <div class="option-description">Lots of fruits, vegetables, whole foods</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="mixed">
+            <div class="option-icon">🍽️</div>
+            <div class="option-content">
+              <div class="option-label">Mixed</div>
+              <div class="option-description">Some healthy, some not so much</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="needswork">
+            <div class="option-icon">🍕</div>
+            <div class="option-content">
+              <div class="option-label">Needs improvement</div>
+              <div class="option-description">I know I could eat better</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 8: Health Context -->
+      <section class="step" data-step="8">
+        <div class="step-header">
+          <div class="step-eyebrow">Health Profile</div>
+          <h1 class="step-title">Are you currently taking any medications?</h1>
+          <p class="step-subtitle">This helps us understand your full picture.</p>
+        </div>
+        <div class="options-list" data-single="true">
+          <div class="option-card" data-value="yes">
+            <div class="option-icon">💊</div>
+            <div class="option-content">
+              <div class="option-label">Yes</div>
+              <div class="option-description">I take prescription medications</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="supplements">
+            <div class="option-icon">🌿</div>
+            <div class="option-content">
+              <div class="option-label">Just supplements</div>
+              <div class="option-description">Vitamins, herbs, or natural products</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="no">
+            <div class="option-icon">✨</div>
+            <div class="option-content">
+              <div class="option-label">No</div>
+              <div class="option-description">I'm not taking anything regularly</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 9: Commitment -->
+      <section class="step" data-step="9">
+        <div class="step-header">
+          <div class="step-eyebrow">Almost Done</div>
+          <h1 class="step-title">How committed are you to improving your gut health?</h1>
+        </div>
+        <div class="options-list" data-single="true">
+          <div class="option-card" data-value="very">
+            <div class="option-icon">🔥</div>
+            <div class="option-content">
+              <div class="option-label">Very committed</div>
+              <div class="option-description">I'm ready to make a real change</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="moderate">
+            <div class="option-icon">👍</div>
+            <div class="option-content">
+              <div class="option-label">Somewhat committed</div>
+              <div class="option-description">Willing to try if it's not too complicated</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="option-card" data-value="exploring">
+            <div class="option-icon">🤔</div>
+            <div class="option-content">
+              <div class="option-label">Just exploring</div>
+              <div class="option-description">Curious but not sure yet</div>
+            </div>
+            <div class="option-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 10: Analysis -->
+      <section class="step" data-step="10">
+        <div class="analysis-screen">
+          <div class="analysis-visual">
+            <div class="analysis-circle"></div>
+            <div class="analysis-icon">🔬</div>
+          </div>
+          <h1 class="step-title">Analyzing your responses...</h1>
+          <div class="analysis-progress">
+            <div class="analysis-bar">
+              <div class="analysis-bar-fill" id="analysisBar"></div>
+            </div>
+            <p class="analysis-status" id="analysisStatus">Reviewing your symptoms...</p>
+          </div>
+          <div class="analysis-items">
+            <div class="analysis-item" data-delay="500">
+              <div class="analysis-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <span class="analysis-item-text">Symptoms evaluated</span>
+            </div>
+            <div class="analysis-item" data-delay="1500">
+              <div class="analysis-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <span class="analysis-item-text">Lifestyle factors considered</span>
+            </div>
+            <div class="analysis-item" data-delay="2500">
+              <div class="analysis-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <span class="analysis-item-text">Personalized profile created</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 11: Results -->
+      <section class="step" data-step="11">
+        <div class="results-header">
+          <div class="step-eyebrow">Your Results</div>
+          <h1 class="step-title">Your Gut Health Score</h1>
+          <div class="score-circle">
+            <svg viewBox="0 0 140 140">
+              <circle class="score-bg" cx="70" cy="70" r="65"/>
+              <circle class="score-fill" id="scoreFill" cx="70" cy="70" r="65"/>
+            </svg>
+            <div class="score-value">
+              <div class="score-number" id="scoreNumber">0</div>
+              <div class="score-label">out of 100</div>
+            </div>
+          </div>
+        </div>
+        <div class="results-summary">
+          <div class="summary-title">Your Profile Summary</div>
+          <div class="summary-item">
+            <span class="summary-label">Primary symptoms</span>
+            <span class="summary-value" id="summarySymptoms">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Duration</span>
+            <span class="summary-value" id="summaryDuration">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Main goal</span>
+            <span class="summary-value" id="summaryGoal">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Improvement potential</span>
+            <span class="summary-value" style="color: var(--accent);">High</span>
+          </div>
+        </div>
+        <p class="step-subtitle">Based on your answers, there's significant room for improvement. The good news? Women with profiles like yours often see meaningful changes within 2-3 weeks.</p>
+      </section>
+
+      <!-- Step 12: Solution -->
+      <section class="step" data-step="12">
+        <div class="step-header">
+          <div class="step-eyebrow">Recommended For You</div>
+          <h1 class="step-title">Meet Nuora</h1>
+          <p class="step-subtitle">A clinically-formulated gut health solution designed specifically for women over 60.</p>
+        </div>
+        <div class="doctor-card">
+          <div class="doctor-avatar">👩‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doctor-name">Dr. Patricia Thornton, MD, FACG</div>
+            <div class="doctor-title">Board-Certified Gastroenterologist • 28 Years Experience</div>
+            <p class="doctor-quote">"Nuora addresses the root causes of digestive discomfort in ways most supplements simply can't. I recommend it to my patients."</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-stat">94%</div>
+          <p class="info-text">of users report noticeable improvement within 21 days. Formulated with 12 clinically-studied probiotic strains.</p>
+        </div>
+      </section>
+
+      <!-- Step 13: Testimonials -->
+      <section class="step" data-step="13">
+        <div class="step-header">
+          <div class="step-eyebrow">Real Stories</div>
+          <h1 class="step-title">Women like you are finding relief</h1>
+        </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"After 12 years of digestive issues, I finally feel like myself again. Within 3 weeks, the bloating I'd accepted as 'normal' just... disappeared."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">👩‍🦳</div>
+              <div>
+                <div class="testimonial-name">Margaret Chen</div>
+                <div class="testimonial-meta">Age 67 • Portland, OR</div>
+                <div class="testimonial-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Verified Buyer
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"My doctor was skeptical at first. But after my last checkup, she asked what I'd been doing differently. My gut health markers improved 47%."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">👵</div>
+              <div>
+                <div class="testimonial-name">Dorothy Williams</div>
+                <div class="testimonial-meta">Age 71 • Tampa, FL</div>
+                <div class="testimonial-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Verified Buyer
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"I'd tried every probiotic on the market. This is the first one that actually worked. No more planning my day around bathroom access. Noticed changes by day 9."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">👩</div>
+              <div>
+                <div class="testimonial-name">Susan Marlowe</div>
+                <div class="testimonial-meta">Age 64 • Denver, CO</div>
+                <div class="testimonial-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Verified Buyer
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 14: Guarantee -->
+      <section class="step" data-step="14">
+        <div class="step-header">
+          <h1 class="step-title">Try it completely risk-free</h1>
+          <p class="step-subtitle">We're so confident you'll love the results, we offer a full money-back guarantee.</p>
+        </div>
+        <div class="guarantee-card">
+          <div class="guarantee-icon">🛡️</div>
+          <div class="guarantee-title">90-Day Money-Back Guarantee</div>
+          <p class="guarantee-text">If you don't see real improvement in your digestive health, simply let us know and we'll refund every penny. No questions asked.</p>
+        </div>
+        <div class="trust-section">
+          <div class="trust-badges">
+            <div class="trust-badge">
+              <div class="trust-badge-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <span class="trust-badge-text">FDA-Registered Facility</span>
+            </div>
+            <div class="trust-badge">
+              <div class="trust-badge-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <span class="trust-badge-text">GMP Certified</span>
+            </div>
+            <div class="trust-badge">
+              <div class="trust-badge-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <span class="trust-badge-text">Third-Party Tested</span>
+            </div>
+            <div class="trust-badge">
+              <div class="trust-badge-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <rect x="1" y="3" width="15" height="13"/>
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                  <circle cx="5.5" cy="18.5" r="2.5"/>
+                  <circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+              </div>
+              <span class="trust-badge-text">Free US Shipping</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 15: Final CTA -->
+      <section class="step" data-step="15">
+        <div class="final-cta-section">
+          <div class="step-header">
+            <h1 class="step-title">Your personalized plan is ready</h1>
+            <p class="step-subtitle">Based on your responses, we've identified a clear path to better gut health.</p>
+          </div>
+          <div class="final-summary">
+            <div class="final-summary-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              Your Custom Plan Includes:
+            </div>
+            <div class="final-summary-list">
+              <div class="final-summary-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Targeted support for your specific symptoms
+              </div>
+              <div class="final-summary-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Personalized dosing recommendations
+              </div>
+              <div class="final-summary-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                90-day money-back guarantee
+              </div>
+              <div class="final-summary-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Free shipping to your door
+              </div>
+            </div>
+          </div>
+          <div class="social-proof-mini">
+            <div class="avatar-stack">
+              <div class="avatar-stack-item">👩‍🦳</div>
+              <div class="avatar-stack-item">👵</div>
+              <div class="avatar-stack-item">👩</div>
+            </div>
+            <span class="social-proof-text"><strong>47,832</strong> women have found relief</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <button class="cta-btn" id="ctaBtn" disabled>Continue</button>
+      <div class="footer-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        256-bit SSL Encrypted
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      currentStep: 1,
+      totalSteps: 15,
+      answers: {},
+      analysisComplete: false
+    };
+
+    // DOM elements
+    const steps = document.querySelectorAll('.step');
+    const progressFill = document.getElementById('progressFill');
+    const stepCounter = document.getElementById('stepCounter');
+    const backBtn = document.getElementById('backBtn');
+    const ctaBtn = document.getElementById('ctaBtn');
+
+    // Initialize
+    function init() {
+      updateProgress();
+      setupOptionCards();
+      setupCTAButton();
+      setupBackButton();
+    }
+
+    // Update progress bar and counter
+    function updateProgress() {
+      const progress = (state.currentStep / state.totalSteps) * 100;
+      progressFill.style.width = `${progress}%`;
+      stepCounter.textContent = `${state.currentStep} of ${state.totalSteps}`;
+
+      // Show/hide back button
+      if (state.currentStep > 1 && state.currentStep !== 10) {
+        backBtn.classList.add('visible');
+      } else {
+        backBtn.classList.remove('visible');
+      }
+
+      // Update CTA button text
+      if (state.currentStep === 15) {
+        ctaBtn.textContent = 'See Your Custom Plan';
+        ctaBtn.classList.add('pulse');
+      } else if (state.currentStep === 5) {
+        ctaBtn.textContent = 'I understand';
+        ctaBtn.disabled = false;
+      } else {
+        ctaBtn.textContent = 'Continue';
+        ctaBtn.classList.remove('pulse');
+      }
+    }
+
+    // Setup option card interactions
+    function setupOptionCards() {
+      document.querySelectorAll('.options-list').forEach(list => {
+        const isMulti = list.dataset.multi === 'true';
+        const cards = list.querySelectorAll('.option-card');
+
+        cards.forEach(card => {
+          card.addEventListener('click', () => {
+            if (isMulti) {
+              card.classList.toggle('selected');
+            } else {
+              cards.forEach(c => c.classList.remove('selected'));
+              card.classList.add('selected');
+            }
+
+            // Save answer
+            const stepEl = card.closest('.step');
+            const stepNum = stepEl.dataset.step;
+
+            if (isMulti) {
+              const selected = Array.from(list.querySelectorAll('.option-card.selected'))
+                .map(c => c.dataset.value);
+              state.answers[`step${stepNum}`] = selected;
+            } else {
+              state.answers[`step${stepNum}`] = card.dataset.value;
+            }
+
+            // Enable CTA
+            updateCTAState();
+          });
+        });
+      });
+    }
+
+    // Update CTA button state
+    function updateCTAState() {
+      const currentStepEl = document.querySelector(`.step[data-step="${state.currentStep}"]`);
+      const optionsList = currentStepEl.querySelector('.options-list');
+
+      if (optionsList) {
+        const hasSelection = optionsList.querySelector('.option-card.selected');
+        ctaBtn.disabled = !hasSelection;
+      } else if (state.currentStep === 5 || state.currentStep === 10 || state.currentStep >= 11) {
+        ctaBtn.disabled = false;
+      }
+    }
+
+    // Setup CTA button
+    function setupCTAButton() {
+      ctaBtn.addEventListener('click', () => {
+        if (state.currentStep === 15) {
+          // Final step - redirect
+          window.location.href = 'https://mynuora.com';
+          return;
+        }
+
+        if (state.currentStep < state.totalSteps) {
+          goToStep(state.currentStep + 1);
+        }
+      });
+    }
+
+    // Setup back button
+    function setupBackButton() {
+      backBtn.addEventListener('click', () => {
+        if (state.currentStep > 1) {
+          goToStep(state.currentStep - 1);
+        }
+      });
+    }
+
+    // Navigate to step
+    function goToStep(stepNum) {
+      // Hide current step
+      document.querySelector(`.step[data-step="${state.currentStep}"]`).classList.remove('active');
+
+      // Show new step
+      state.currentStep = stepNum;
+      const newStep = document.querySelector(`.step[data-step="${stepNum}"]`);
+      newStep.classList.add('active');
+
+      // Update progress
+      updateProgress();
+
+      // Reset CTA state
+      ctaBtn.disabled = true;
+      updateCTAState();
+
+      // Handle special steps
+      if (stepNum === 10) {
+        runAnalysis();
+      } else if (stepNum === 11) {
+        showResults();
+      }
+
+      // Scroll to top
+      document.getElementById('mainContent').scrollTop = 0;
+    }
+
+    // Run analysis animation
+    function runAnalysis() {
+      ctaBtn.disabled = true;
+      const bar = document.getElementById('analysisBar');
+      const status = document.getElementById('analysisStatus');
+      const items = document.querySelectorAll('.analysis-item');
+
+      const statuses = [
+        'Reviewing your symptoms...',
+        'Analyzing lifestyle factors...',
+        'Creating your profile...',
+        'Finalizing recommendations...'
+      ];
+
+      let progress = 0;
+      let statusIndex = 0;
+
+      const interval = setInterval(() => {
+        progress += 2;
+        bar.style.width = `${progress}%`;
+
+        if (progress >= 25 && statusIndex === 0) {
+          status.textContent = statuses[1];
+          statusIndex = 1;
+        } else if (progress >= 50 && statusIndex === 1) {
+          status.textContent = statuses[2];
+          statusIndex = 2;
+        } else if (progress >= 75 && statusIndex === 2) {
+          status.textContent = statuses[3];
+          statusIndex = 3;
+        }
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          status.textContent = 'Analysis complete!';
+          ctaBtn.disabled = false;
+          ctaBtn.textContent = 'View Your Results';
+        }
+      }, 50);
+
+      // Show analysis items with delays
+      items.forEach((item, index) => {
+        const delay = parseInt(item.dataset.delay);
+        setTimeout(() => {
+          item.classList.add('visible');
+        }, delay);
+      });
+    }
+
+    // Show results with animations
+    function showResults() {
+      // Calculate score based on answers
+      let score = 45; // Base score
+
+      if (state.answers.step2 && state.answers.step2.length > 0) {
+        score -= state.answers.step2.length * 5;
+      }
+      if (state.answers.step3 === 'chronic') {
+        score -= 10;
+      } else if (state.answers.step3 === 'long') {
+        score -= 5;
+      }
+      if (state.answers.step9 === 'very') {
+        score += 15;
+      }
+
+      score = Math.max(28, Math.min(52, score));
+
+      // Animate score
+      const scoreNumber = document.getElementById('scoreNumber');
+      const scoreFill = document.getElementById('scoreFill');
+
+      // SVG circle animation (circumference = 2 * PI * 65 ≈ 408)
+      const circumference = 408;
+      const offset = circumference - (score / 100) * circumference;
+
+      setTimeout(() => {
+        scoreFill.style.strokeDashoffset = offset;
+      }, 100);
+
+      // Animate number
+      let current = 0;
+      const increment = score / 30;
+      const counter = setInterval(() => {
+        current += increment;
+        if (current >= score) {
+          current = score;
+          clearInterval(counter);
+        }
+        scoreNumber.textContent = Math.round(current);
+      }, 50);
+
+      // Update summary
+      const symptoms = state.answers.step2 || ['Not specified'];
+      const symptomLabels = {
+        bloating: 'Bloating',
+        irregular: 'Irregular',
+        fatigue: 'Fatigue',
+        discomfort: 'Discomfort',
+        brainfog: 'Brain fog'
+      };
+
+      const durationLabels = {
+        recent: 'Less than 6 months',
+        moderate: '6 months - 2 years',
+        long: '2-5 years',
+        chronic: '5+ years'
+      };
+
+      const goalLabels = {
+        energy: 'More energy',
+        regularity: 'Regularity',
+        comfort: 'Less discomfort',
+        confidence: 'Confidence'
+      };
+
+      document.getElementById('summarySymptoms').textContent =
+        symptoms.slice(0, 2).map(s => symptomLabels[s] || s).join(', ');
+      document.getElementById('summaryDuration').textContent =
+        durationLabels[state.answers.step3] || 'Not specified';
+      document.getElementById('summaryGoal').textContent =
+        goalLabels[state.answers.step6] || 'Not specified';
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
