@@ -16,8 +16,7 @@
       --ink-2: #2e2622;
       --accent: #f24a1d;
       --accent-2: #0a7a5f;
-      --line: rgba(24, 20, 18, 0.15);
-      --shadow: 0 20px 60px rgba(24, 20, 18, 0.15);
+      --line: #000;
       --radius: 18px;
     }
 
@@ -87,7 +86,7 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1fr;
       gap: 28px;
       align-items: stretch;
       margin-bottom: 40px;
@@ -98,7 +97,7 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 28px;
-      box-shadow: var(--shadow);
+      box-shadow: none;
     }
 
     .hero-card strong {
@@ -161,7 +160,7 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 20px;
-      box-shadow: var(--shadow);
+      box-shadow: none;
     }
 
     .panel h3 {
@@ -197,7 +196,7 @@
       margin: 28px 0 8px;
       padding: 18px;
       border-radius: var(--radius);
-      border: 1px dashed var(--line);
+      border: 1px solid var(--line);
       background: rgba(255,255,255,0.5);
     }
 
@@ -233,6 +232,7 @@
     }
 
     .callout {
+      border: 1px solid var(--line);
       border-left: 4px solid var(--accent);
       padding: 16px 20px;
       background: rgba(242, 74, 29, 0.08);
