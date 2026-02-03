@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>clickup → facebook automation blueprint</title>
+  <meta name="description" content="standalone guide for the clickup → facebook automation pipeline" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f6f0e8;
+      --paper-2: #efe6da;
+      --ink: #181412;
+      --ink-2: #2e2622;
+      --accent: #f24a1d;
+      --accent-2: #0a7a5f;
+      --line: rgba(24, 20, 18, 0.15);
+      --shadow: 0 20px 60px rgba(24, 20, 18, 0.15);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #fff2dd 0%, transparent 60%),
+        radial-gradient(800px 600px at 90% 0%, #ffe4d6 0%, transparent 55%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.015) 0 1px, transparent 1px 3px),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0 1px, transparent 1px 3px);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 12px;
+      color: var(--ink-2);
+      margin-bottom: 14px;
+    }
+
+    h1, h2 {
+      font-family: "Unbounded", sans-serif;
+      text-transform: lowercase;
+      margin: 0 0 16px;
+      line-height: 1.1;
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 64px);
+    }
+
+    h2 {
+      font-size: clamp(22px, 3vw, 32px);
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--ink-2);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 40px;
+    }
+
+    .hero-card {
+      background: #fffaf3;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card strong {
+      color: var(--ink);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .tag .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill span {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .panel {
+      background: #fffaf3;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h3 {
+      font-family: "Unbounded", sans-serif;
+      font-size: 16px;
+      margin: 0 0 12px;
+      text-transform: lowercase;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .list span {
+      padding-left: 20px;
+      position: relative;
+      color: var(--ink-2);
+    }
+
+    .list span::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--accent);
+      position: absolute;
+      left: 0;
+      top: 8px;
+    }
+
+    .flow {
+      margin: 28px 0 8px;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 1px dashed var(--line);
+      background: rgba(255,255,255,0.5);
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .flow-node {
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      min-height: 120px;
+      position: relative;
+    }
+
+    .flow-node h4 {
+      margin: 0 0 6px;
+      font-family: "Unbounded", sans-serif;
+      font-size: 14px;
+      text-transform: lowercase;
+    }
+
+    .flow-node .step {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-weight: 700;
+      color: var(--accent-2);
+      font-size: 12px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      background: rgba(242, 74, 29, 0.08);
+      border-radius: 12px;
+    }
+
+    .mono {
+      font-family: "ui-monospace", "sfmono-regular", "menlo", "consolas", monospace;
+      font-size: 13px;
+      color: #1f1b19;
+      background: rgba(24,20,18,0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .table th, .table td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .table th {
+      font-family: "Unbounded", sans-serif;
+      font-size: 12px;
+      text-transform: lowercase;
+      color: var(--ink-2);
+    }
+
+    .footer {
+      margin-top: 48px;
+      font-size: 12px;
+      color: var(--ink-2);
+      text-transform: lowercase;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="eyebrow">clickup → facebook automation</div>
+    <div class="hero">
+      <div class="hero-card">
+        <div class="tag"><span class="dot"></span>verified blueprint</div>
+        <h1>clickup to facebook ad push, end to end</h1>
+        <p>this doc shows the real pipeline used in the product. it is a single trigger in clickup that drives a fully automated ad push in facebook, with strict idempotency and a feedback loop back to clickup.</p>
+        <div class="summary">
+          <div class="pill"><span>trigger</span> status = “push to facebook”</div>
+          <div class="pill"><span>job</span> <span class="mono">clickup_ad_push</span></div>
+          <div class="pill"><span>fb api</span> adset + flexible ads</div>
+          <div class="pill"><span>feedback</span> comments + status update</div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h2>plain message for a friend</h2>
+        <p>i set up clickup so when a task moves to <strong>“push to facebook”</strong>, it fires a webhook to our backend.</p>
+        <p>the backend queues a job. the worker pulls the task, validates fields, downloads assets from google drive, creates or reuses the adset, uploads assets, and creates the ads in facebook.</p>
+        <p>then it posts a summary comment back to clickup and sets the task status to <strong>published</strong> or <strong>failed to push</strong>.</p>
+        <p>retries are safe because we lock per task and reuse ids.</p>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="step">01</div>
+          <h4>clickup event</h4>
+          <p>task status update → webhook</p>
+          <p class="mono">POST /api/webhooks/clickup</p>
+        </div>
+        <div class="flow-node">
+          <div class="step">02</div>
+          <h4>dedupe + queue</h4>
+          <p>skip duplicate webhooks, enqueue job</p>
+          <p class="mono">clickup_webhook_events</p>
+        </div>
+        <div class="flow-node">
+          <div class="step">03</div>
+          <h4>worker run</h4>
+          <p>validate, download, create adset, upload assets, build ads</p>
+        </div>
+        <div class="flow-node">
+          <div class="step">04</div>
+          <h4>feedback loop</h4>
+          <p>comment + status update</p>
+          <p class="mono">published / failed to push</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>trigger rules</h3>
+        <div class="list">
+          <span>event: <span class="mono">taskStatusUpdated</span></span>
+          <span>only enqueue when status == “push to facebook”</span>
+          <span>always update stored <span class="mono">clickup_status</span></span>
+          <span>skip duplicate webhooks by <span class="mono">webhook_id + history_item_id</span></span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>required clickup fields</h3>
+        <div class="list">
+          <span>primary text 1</span>
+          <span>headline 1</span>
+          <span>url destination</span>
+          <span>final submission link (google drive)</span>
+          <span>campaign name (unless test mode)</span>
+          <span>page name</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>worker steps</h3>
+        <div class="list">
+          <span>fetch task</span>
+          <span>parse custom fields</span>
+          <span>validate inputs</span>
+          <span>resolve campaign + page id</span>
+          <span>download assets from drive</span>
+          <span>create or reuse adset</span>
+          <span>upload assets + create flexible ads</span>
+          <span>comment + status update</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>idempotency</h3>
+        <div class="list">
+          <span><span class="mono">clickup_push_runs</span> run lock per task</span>
+          <span><span class="mono">clickup_push_items</span> per-variant state</span>
+          <span>reuse adset id via <span class="mono">fb_adset_id</span> field</span>
+          <span>reuse assets when hashes match</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: 22px;">
+      <h3>clickup feedback loop</h3>
+      <div class="list">
+        <span>comments posted: start, download, adset, upload, success, retry, failure</span>
+        <span>success → status <span class="mono">published</span></span>
+        <span>human fix → status <span class="mono">failed to push</span></span>
+        <span>transient error → auto retry, status unchanged</span>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: 22px;">
+      <div class="panel">
+        <h3>settings knobs</h3>
+        <div class="list">
+          <span><span class="mono">max_concurrent_jobs</span> (default 1)</span>
+          <span><span class="mono">inter_job_delay_seconds</span> (default 2)</span>
+          <span><span class="mono">default_cta</span>, <span class="mono">default_ad_status</span></span>
+          <span><span class="mono">test_mode_enabled</span>, <span class="mono">test_campaign_id</span></span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>api endpoints</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>method</th>
+              <th>path</th>
+              <th>purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>post</td>
+              <td><span class="mono">/api/webhooks/clickup</span></td>
+              <td>receive clickup webhook</td>
+            </tr>
+            <tr>
+              <td>get</td>
+              <td><span class="mono">/api/webhooks/clickup/status</span></td>
+              <td>check webhook config</td>
+            </tr>
+            <tr>
+              <td>post</td>
+              <td><span class="mono">/api/webhooks/clickup/setup</span></td>
+              <td>create/update webhook</td>
+            </tr>
+            <tr>
+              <td>get</td>
+              <td><span class="mono">/api/settings/clickup</span></td>
+              <td>get settings</td>
+            </tr>
+            <tr>
+              <td>put</td>
+              <td><span class="mono">/api/settings/clickup</span></td>
+              <td>update settings</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: 22px;">
+      <h3>notes</h3>
+      <div class="list">
+        <span>ads are created in flexible format (asset feed spec)</span>
+        <span>google drive downloads are parallelized</span>
+        <span>if any asset download fails, the job fails (no partial push)</span>
+        <span>worker timeout is 90 minutes, stale jobs are cleaned on startup</span>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 22px;">
+      <p><strong>last verified:</strong> feb 3, 2026</p>
+      <p>this document is a faithful reflection of the current code path in the repo.</p>
+    </div>
+
+    <div class="footer">clickup → facebook automation blueprint</div>
+  </div>
+</body>
+</html>
