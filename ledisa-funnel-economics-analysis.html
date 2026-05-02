@@ -131,94 +131,9 @@
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin: 38px 0 0;
-    }
-
-    .brief-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .brief-panel {
-      border: 1px solid var(--line);
-      background: rgba(255, 250, 241, 0.92);
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .brief-panel.dark {
-      background: var(--black);
-      color: #fff7e9;
-      border-color: var(--black);
-    }
-
-    .brief-panel .eyebrow {
-      display: block;
-      margin-bottom: 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--gold);
-    }
-
-    .brief-panel.dark .eyebrow {
-      color: #d6a24b;
-    }
-
-    .brief-panel h2 {
-      font-size: clamp(28px, 3vw, 42px);
-      line-height: 1.04;
-    }
-
-    .brief-panel p {
-      margin: 12px 0 0;
-      font-size: 17px;
-      color: var(--muted);
-    }
-
-    .brief-panel.dark p {
-      color: #efe2cc;
-    }
-
-    .brief-list {
-      display: grid;
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .brief-list li {
-      display: grid;
-      grid-template-columns: 84px 1fr;
-      gap: 12px;
-      align-items: baseline;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 247, 233, 0.18);
-    }
-
-    .brief-list li:last-child {
-      border-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .brief-list strong {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #d6a24b;
-    }
-
-    .brief-list span {
-      color: #fff7e9;
-      font-size: 16px;
-      line-height: 1.35;
     }
 
     .stat {
@@ -545,7 +460,6 @@
 
     @media (max-width: 900px) {
       .summary-grid,
-      .brief-grid,
       .formula,
       .gap-grid,
       .operating-model {
@@ -622,7 +536,6 @@
       }
 
       .stat,
-      .brief-panel,
       .formula-card,
       .gap-card,
       .model-card,
@@ -638,11 +551,6 @@
       .callout p {
         font-size: 17px;
         line-height: 1.45;
-      }
-
-      .brief-list li {
-        grid-template-columns: 1fr;
-        gap: 3px;
       }
 
       .formula {
@@ -704,8 +612,8 @@
     <div class="kicker">source: loom extraction + manual frame review + transcript mapping</div>
     <h1>how ledisa creates more paid traffic room than we do</h1>
     <p class="dek">
-      ledisa turns each first purchase into a monetization sequence: subscription entry, one-click post-purchase expansion,
-      review capture, and dispute routing. the result is more cash, more rebill value, and more conversion support per paid visitor.
+      facebook gets easier when one buyer is worth more. ledisa gets the first payment, then keeps selling before the buyer reaches
+      the thank-you page: unpuff, extra glp-1 packs, dopamine, nad+, priority handling, relax, and focus.
     </p>
 
     <div class="summary-grid" aria-label="key observations">
@@ -720,34 +628,9 @@
         <div class="note">the discussed order total after multiple one-click offers, compared with our current $56 aov baseline.</div>
       </div>
       <div class="stat">
-        <span class="label">copy claim only</span>
-        <span class="value">93%</span>
-        <div class="note">"add this to their order" is persuasive page copy, separate from measured attach rate.</div>
-      </div>
-      <div class="stat">
         <span class="label">our post-purchase rpv</span>
         <span class="value">$6</span>
-        <div class="note">the current post-purchase app sale rpv gives limited allowable cac expansion.</div>
-      </div>
-    </div>
-
-    <div class="brief-grid" aria-label="fast read">
-      <div class="brief-panel">
-        <span class="eyebrow">read this first</span>
-        <h2>the scale comes from paid-click yield, then proof and dispute control protect the yield.</h2>
-        <p>
-          the product promise gets the click. the subscription default, one-click expansion, review ask, and dispute path
-          decide how much traffic the brand can keep buying after facebook finds the audience.
-        </p>
-      </div>
-      <div class="brief-panel dark">
-        <span class="eyebrow">mechanical map</span>
-        <ul class="brief-list">
-          <li><strong>cash</strong><span>$56 baseline aov against a discussed $126.95 ledisa order.</span></li>
-          <li><strong>rebill</strong><span>75% subscription take rate today, ledisa framed as subscription-dominant.</span></li>
-          <li><strong>proof</strong><span>review capture happens while buyer sentiment is warm.</span></li>
-          <li><strong>retention</strong><span>dispute intent is routed into merchant support before the bank path.</span></li>
-        </ul>
+        <div class="note">after checkout, we add about $6 per buyer today.</div>
       </div>
     </div>
   </header>
@@ -757,27 +640,26 @@
       <div class="section-head">
         <div class="section-number">01 / thesis</div>
         <div>
-          <h2>the first sale opens the monetization sequence.</h2>
+          <h2>after the first payment, they keep selling.</h2>
           <p class="lede">
-            ledisa's apparent media efficiency is a funnel economics effect. the initial order creates a payment-permission
-            moment, then the buyer moves through one-click offers where each next product is positioned as the missing piece
-            of the same result.
+            the buyer has already entered card details. ledisa uses that moment to show more offers one by one, and each offer
+            is sold as something that helps the original weight-loss result work better.
           </p>
         </div>
       </div>
 
       <div class="callout">
-        <strong>correct model</strong>
+        <strong>actual reason</strong>
         <p>
-          meta scales when each paid click can produce more immediate cash, more rebill value, more public proof, and
-          fewer lost disputes. the product promise earns the click; the post-purchase system funds the buying.
+          facebook can spend more because one buyer can become a $126.95 order before leaving checkout. our current setup is
+          $56 aov plus about $6 after purchase, so each buyer gives less room to buy the next click.
         </p>
       </div>
 
       <div class="formula">
         <div class="formula-card bad">
           <h3>our current math</h3>
-          <p>we have a real front-end business with limited post-purchase expansion today.</p>
+          <p>today, most of our money comes from the first order. the post-purchase app adds about $6.</p>
           <div class="equation" aria-label="current value equation">
             <span>current value</span>
             <strong>=</strong>
@@ -787,11 +669,11 @@
             <strong>+</strong>
             <span class="term">75% subscription_take_rate</span>
           </div>
-          <p class="mechanism">this supports paid acquisition at one ceiling. the current post-purchase layer carries a small share of the media burden.</p>
+          <p class="mechanism">this buys traffic until the ceiling comes fast because the order barely grows after payment.</p>
         </div>
         <div class="formula-card good">
           <h3>ledisa-style math</h3>
-          <p>the buyer enters continuity, then each one-click offer increases immediate cash, trust proof, and dispute control.</p>
+          <p>the buyer pays once, then every extra yes adds cash before the confirmation page.</p>
           <div class="equation" aria-label="scale value equation">
             <span>scale value</span>
             <strong>=</strong>
@@ -803,7 +685,7 @@
             <strong>+</strong>
             <span class="term">dispute_deflection</span>
           </div>
-          <p class="mechanism">this gives the brand more room before the cac ceiling hits.</p>
+          <p class="mechanism">this gives the brand more room to keep buying facebook traffic.</p>
         </div>
       </div>
     </section>
@@ -812,10 +694,10 @@
       <div class="section-head">
         <div class="section-number">02 / exact journey</div>
         <div>
-          <h2>the buyer moves through a chain of newly created problems.</h2>
+          <h2>each new page gives them a new reason to buy.</h2>
           <p class="lede">
-            the pattern: validate the purchase, introduce a hidden blocker, explain a mechanism, show visual proof, then make
-            the add-on feel like the rational completion of the original purchase.
+            the pattern is simple: you bought weight loss; bloating can hide it. then energy can crash. then your face can look older.
+            each add-on is presented as the fix for the next problem.
           </p>
         </div>
       </div>
@@ -828,7 +710,7 @@
             <p class="mechanism">the narrator says this happens "after purchasing from the store on the 100% subscription." that means the card is already captured and the buyer is now in low-friction one-click mode.</p>
           </div>
           <div class="quote">"after purchasing from the store on the 100% subscription..."</div>
-          <div class="metric">moves: subscription take rate, baseline ltv, payment permission</div>
+          <div class="metric">moves: subscription take rate, baseline ltv, saved-card buying</div>
         </article>
 
         <article class="step">
@@ -854,8 +736,8 @@
         <article class="step">
           <div class="time">0:50</div>
           <div>
-            <h3>normalization claim and visual proof stack</h3>
-            <p class="mechanism">the screen shows a collage of women wearing patches, then a green 93% add claim. classify this as page copy: its job is to normalize the add-on and make adding feel like the default behavior.</p>
+            <h3>the 93% line makes adding feel normal</h3>
+            <p class="mechanism">the screen shows a collage of women wearing patches, then a green 93% add claim. treat this as page copy, separate from measured attach rate. its job is to make unpuff feel like the normal next click.</p>
           </div>
           <div class="quote">"93% add this to their order."</div>
           <div class="metric">moves: conversion rate through conformity pressure</div>
@@ -915,10 +797,10 @@
           <div class="time">4:29</div>
           <div>
             <h3>fourth offer: nad+ patch</h3>
-            <p class="mechanism">the frame shifts from weight loss to youth. now the consequence of transformation is looking tired or older, and nad+ becomes the mechanism that protects the buyer's appearance.</p>
+            <p class="mechanism">the frame shifts from weight loss to youth. now the consequence of transformation is looking tired or older, and nad+ becomes the reason to buy appearance protection.</p>
           </div>
           <div class="quote">"you're taking control of your weight. now take back your youth too."</div>
-          <div class="metric">moves: beauty/anti-aging monetization, higher-ticket attach</div>
+          <div class="metric">moves: beauty/anti-aging add-on, higher-ticket attach</div>
         </article>
 
         <article class="step">
@@ -975,7 +857,7 @@
           <div class="time">7:35</div>
           <div>
             <h3>order completion and founder-style message</h3>
-            <p class="mechanism">after aggressive monetization, the tone softens. "nicole from the ledisa family" reframes the purchase as joining a caring wellness ritual, reducing buyer's remorse.</p>
+            <p class="mechanism">after the upsell chain, the tone softens. "nicole from the ledisa family" reframes the purchase as joining a caring wellness ritual, reducing buyer's remorse.</p>
           </div>
           <div class="quote">"wellness should be easy, consistent and work with your body."</div>
           <div class="metric">moves: post-purchase sentiment, refund resistance</div>
@@ -1015,23 +897,22 @@
           <div class="time">10:50</div>
           <div>
             <h3>growth chart now makes sense</h3>
-            <p class="mechanism">the narrator returns to brandsearch and connects the funnel to the traffic hockey stick. the explanation becomes buyer monetization: better economics make more ads affordable.</p>
+            <p class="mechanism">the narrator returns to brandsearch and connects the funnel to the traffic hockey stick. the explanation is simple: bigger orders make more ads affordable.</p>
           </div>
           <div class="quote">"subscription, high aov, high amount of upsells, everything."</div>
-          <div class="metric">moves: allowable cac, budget scaling ceiling</div>
+          <div class="metric">moves: how much they can pay for a buyer</div>
         </article>
       </div>
     </section>
 
     <section id="economics" class="shell">
       <div class="section-head">
-        <div class="section-number">03 / efficiency</div>
+        <div class="section-number">03 / why it scales</div>
         <div>
-          <h2>the funnel increases allowable cac by stacking five efficiency layers.</h2>
+          <h2>five things make each facebook buyer worth more.</h2>
           <p class="lede">
-            the store becomes efficient because it raises expected revenue per acquired buyer at multiple points after the
-            first click. every mechanism below either increases cash today, increases rebill value, increases future conversion
-            through trust, or prevents value leakage after purchase.
+            ledisa gets more cash today, more subscription value later, more reviews for the next buyer, and more control when
+            someone gets angry after purchase.
           </p>
         </div>
       </div>
@@ -1039,7 +920,7 @@
       <table class="matrix">
         <thead>
           <tr>
-            <th>economic lever</th>
+            <th>what makes buyer worth more</th>
             <th>where it appears</th>
             <th>why it matters</th>
             <th>what to measure</th>
@@ -1059,25 +940,25 @@
             <td>attach rate per offer, post-purchase rpv, revenue per purchaser, drop-off per step, accepted revenue by offer position</td>
           </tr>
           <tr>
-            <td>completion-product framing</td>
+            <td>add-on protects the main result</td>
             <td>weaker full-result outcome, bloating, dopamine crash, tired/older look</td>
             <td>the add-on is framed as protecting the original result. this is why it can convert better than a generic "also buy this" shelf.</td>
             <td>offer conversion compared with neutral product upsell copy, refund rate by accepted offer, attach rate by original ad angle</td>
           </tr>
           <tr>
-            <td>quantity and per-pack anchoring</td>
+            <td>larger packs sold as cheaper units</td>
             <td>two-month supply, $22 per pack, $10 per pack, free patch bundle</td>
             <td>buyers evaluate the smaller unit price while the brand collects a larger total order.</td>
             <td>packs per order, total order value, refund rate by pack count</td>
           </tr>
           <tr>
-            <td>review capture before product experience</td>
+            <td>review ask right after purchase</td>
             <td>post-confirmation personal message into rating prompt</td>
             <td>public trust improves while the buyer is still emotionally validated, increasing future pdp/ad conversion. their trustpilot appears around 4.2 in the loom; ours is 3.8 and the target is above 4.4.</td>
             <td>review request conversion, rating distribution, trustpilot score, review timing after order, cv uplift from rating movement</td>
           </tr>
           <tr>
-            <td>chargeback interception</td>
+            <td>bank disputes routed to support</td>
             <td>disputifier survey and bank-dispute redirect message</td>
             <td>protects processor health and keeps more value inside the merchant-controlled support path. we currently have beautifier-style prevention data; ledisa adds the deflection workflow.</td>
             <td>chargeback rate, dispute form starts, dispute deflection, support resolution time, recovered revenue</td>
@@ -1089,8 +970,7 @@
         <strong>why facebook can scale</strong>
         <p>
           if the average ledisa buyer exits near the observed $126.95 while our current aov is $56 plus $6 post-purchase rpv,
-          ledisa can pay meaningfully more for the same quality buyer. that is the mechanical explanation for facebook growth
-          through a higher spend ceiling.
+          ledisa can pay meaningfully more for the same quality buyer. that is why facebook can keep increasing spend.
         </p>
       </div>
     </section>
@@ -1099,10 +979,10 @@
       <div class="section-head">
         <div class="section-number">04 / copy logic</div>
         <div>
-          <h2>each offer uses the same psychological machine.</h2>
+          <h2>same script, different product.</h2>
           <p class="lede">
-            the flow is modular. this is why it can be scaled across product categories. the product changes while the underlying
-            persuasion engine stays the same.
+            every offer follows the same pattern: you made the right purchase, here is the thing that could block the result,
+            here is the add-on that fixes it.
           </p>
         </div>
       </div>
@@ -1117,7 +997,7 @@
           <span>one hidden issue can slow or hide results.</span>
         </div>
         <div class="flow-node">
-          <b>3. name mechanism</b>
+          <b>3. name the reason</b>
           <span>bloating, dopamine, nad+, water retention, reward signals.</span>
         </div>
         <div class="flow-node">
@@ -1139,7 +1019,7 @@
           <tr>
             <th>offer</th>
             <th>base purchase creates this new fear</th>
-            <th>mechanism used</th>
+            <th>reason used</th>
             <th>economic job</th>
           </tr>
         </thead>
@@ -1188,10 +1068,10 @@
       <div class="section-head">
         <div class="section-number">05 / our gap</div>
         <div>
-          <h2>the gap is the spread between their buyer value and ours.</h2>
+          <h2>they can spend more because one buyer pays more.</h2>
           <p class="lede">
-            your loom comments matter because they identify the exact places where ledisa extracts more value from the same
-            acquired buyer. every layer gives meta more room to breathe.
+            your loom comments point to the exact gaps: order size, post-purchase revenue, subscription clarity, reviews, and
+            dispute handling.
           </p>
         </div>
       </div>
@@ -1200,10 +1080,10 @@
         <div class="gap-card">
           <div class="label">gap 01</div>
           <h3>aov depth</h3>
-          <p>our current aov is $56. the ledisa loom order reaches about $126.95 after the post-purchase sequence.</p>
+          <p>our current aov is $56. the ledisa loom order reaches about $126.95 after the post-purchase offers.</p>
           <ul>
             <li>their order can be roughly 2.3x our current aov before rebills.</li>
-            <li>that difference directly expands allowable cac.</li>
+            <li>that difference lets them pay more for traffic.</li>
             <li>the delta is created after purchase and on the pdp.</li>
           </ul>
         </div>
@@ -1255,7 +1135,7 @@
         <div class="gap-card">
           <div class="label">gap 06</div>
           <h3>offer-story continuity</h3>
-          <p>their post-purchase products follow one transformation story. every offer extends the original promise into a new consequence.</p>
+          <p>their post-purchase products follow one transformation story. every offer takes the original promise and adds the next consequence.</p>
           <ul>
             <li>glp-1 creates the appetite result.</li>
             <li>unpuff makes the result visible.</li>
@@ -1270,11 +1150,10 @@
       <div class="section-head">
         <div class="section-number">06 / scale map</div>
         <div>
-          <h2>what has to change for us to get the same media freedom.</h2>
+          <h2>what we need to copy from the math.</h2>
           <p class="lede">
-            this is the mechanical interpretation: if we want the same scale behavior, we need the same economic behavior. the
-            flow has to raise post-purchase rpv, subscription ltv, trust conversion, and dispute retention enough that meta can
-            spend more while holding contribution margin.
+            to buy traffic like this, we need more money after checkout, clearer subscriptions, better review capture, and an
+            internal path for refund or dispute intent.
           </p>
         </div>
       </div>
@@ -1286,7 +1165,7 @@
             <li>current: $6 post-purchase rpv.</li>
             <li>needed: a ladder where offer 1 is a result-completion product rather than a generic cross-sell.</li>
             <li>measure: rpv by offer step and total aov.</li>
-            <li>win condition: post-purchase rpv becomes large enough to move allowable cac.</li>
+            <li>win condition: post-purchase rpv becomes large enough to raise what we can pay for a buyer.</li>
           </ul>
         </div>
 
@@ -1322,11 +1201,10 @@
       </div>
 
       <div class="callout">
-        <strong>the scale equation</strong>
+        <strong>plain version</strong>
         <p>
-          ledisa's growth makes sense when the funnel turns a buyer into higher immediate aov, higher subscription value,
-          higher public trust, and lower value leakage. our current bottleneck includes ad creative plus buyer value after
-          payment: $56 aov plus $6 post-purchase rpv creates a tighter spend ceiling.
+          ledisa can buy more facebook traffic because the checkout makes one buyer worth more before they leave. our current
+          $56 aov plus $6 post-purchase rpv creates a tighter spend ceiling.
         </p>
       </div>
     </section>
