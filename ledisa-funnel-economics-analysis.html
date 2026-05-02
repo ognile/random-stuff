@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ledisa Funnel Economics Analysis</title>
+  <style>
+    :root {
+      --ink: #151515;
+      --muted: #5f5a54;
+      --line: #d7d0c6;
+      --paper: #f6f1e8;
+      --panel: #fffaf1;
+      --green: #176b4d;
+      --red: #b3261e;
+      --blue: #214c7c;
+      --gold: #9f6c18;
+      --black: #0d0d0d;
+      --shadow: 0 18px 50px rgba(45, 34, 18, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(21, 21, 21, 0.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(21, 21, 21, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar,
+    .shell,
+    .summary-grid > *,
+    .formula > *,
+    .step > *,
+    .flow > *,
+    .gap-grid > *,
+    .operating-model > *,
+    .matrix th,
+    .matrix td {
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(21, 21, 21, 0.14);
+      background: rgba(246, 241, 232, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 58px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      color: var(--ink);
+    }
+
+    header {
+      padding: 68px 0 42px;
+    }
+
+    .kicker {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--green);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 960px;
+      font-size: clamp(42px, 7vw, 92px);
+      line-height: 0.92;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .dek {
+      max-width: 850px;
+      margin: 26px 0 0;
+      font-size: clamp(19px, 2vw, 26px);
+      color: #302b26;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 38px 0 0;
+    }
+
+    .brief-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .brief-panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 241, 0.92);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .brief-panel.dark {
+      background: var(--black);
+      color: #fff7e9;
+      border-color: var(--black);
+    }
+
+    .brief-panel .eyebrow {
+      display: block;
+      margin-bottom: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+
+    .brief-panel.dark .eyebrow {
+      color: #d6a24b;
+    }
+
+    .brief-panel h2 {
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.04;
+    }
+
+    .brief-panel p {
+      margin: 12px 0 0;
+      font-size: 17px;
+      color: var(--muted);
+    }
+
+    .brief-panel.dark p {
+      color: #efe2cc;
+    }
+
+    .brief-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .brief-list li {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 12px;
+      align-items: baseline;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 247, 233, 0.18);
+    }
+
+    .brief-list li:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .brief-list strong {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #d6a24b;
+    }
+
+    .brief-list span {
+      color: #fff7e9;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 241, 0.82);
+      padding: 18px;
+      min-height: 142px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat .label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .stat .value {
+      display: block;
+      margin-top: 18px;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .stat .note {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    section {
+      padding: 42px 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 36px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+
+    .section-number {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      border-top: 2px solid var(--gold);
+      padding-top: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.12;
+    }
+
+    .lede {
+      max-width: 920px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .callout {
+      border: 2px solid var(--black);
+      background: var(--black);
+      color: #fff7e9;
+      padding: 26px;
+      margin: 22px 0;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 22px;
+    }
+
+    .callout strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 18px;
+      color: #efe2cc;
+    }
+
+    .formula {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .formula-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 24px;
+    }
+
+    .formula-card.bad {
+      border-top: 5px solid var(--red);
+    }
+
+    .formula-card.good {
+      border-top: 5px solid var(--green);
+    }
+
+    .equation {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 14px;
+      background: rgba(21, 21, 21, 0.06);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .equation span,
+    .equation strong {
+      display: inline-flex;
+      max-width: 100%;
+    }
+
+    .equation .term {
+      border: 1px solid rgba(21, 21, 21, 0.16);
+      background: rgba(255, 255, 255, 0.38);
+      padding: 4px 7px;
+    }
+    }
+
+    .journey {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 86px 1.15fr 1fr 1fr;
+      gap: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 241, 0.88);
+      padding: 18px;
+      align-items: start;
+    }
+
+    .time {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .mechanism {
+      color: var(--muted);
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .metric {
+      border-left: 3px solid var(--green);
+      padding-left: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .quote {
+      border-left: 3px solid var(--red);
+      padding-left: 12px;
+      color: #3c342d;
+      font-style: italic;
+    }
+
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      font-size: 15px;
+      table-layout: fixed;
+    }
+
+    .matrix th,
+    .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 13px 14px;
+      vertical-align: top;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    .matrix th {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(21, 21, 21, 0.06);
+    }
+
+    .matrix tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 7px;
+      margin: 0 4px 4px 0;
+      border: 1px solid rgba(21, 21, 21, 0.22);
+      background: rgba(255, 255, 255, 0.38);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin: 24px 0;
+    }
+
+    .flow-node {
+      min-height: 112px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 14px;
+      position: relative;
+    }
+
+    .flow-node:after {
+      content: ">";
+      position: absolute;
+      right: -11px;
+      top: 42%;
+      color: var(--gold);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+    }
+
+    .flow-node:last-child:after {
+      content: "";
+    }
+
+    .flow-node b {
+      display: block;
+      font-size: 16px;
+      line-height: 1.05;
+    }
+
+    .flow-node span {
+      display: block;
+      margin-top: 9px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .gap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .gap-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 20px;
+      min-height: 190px;
+    }
+
+    .gap-card .label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+
+    .operating-model {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .model-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .model-card ul,
+    .gap-card ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+    }
+
+    .model-card li,
+    .gap-card li {
+      margin: 7px 0;
+    }
+
+    footer {
+      padding: 40px 0 70px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid,
+      .brief-grid,
+      .formula,
+      .gap-grid,
+      .operating-model {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head,
+      .callout,
+      .step {
+        grid-template-columns: 1fr;
+      }
+
+      .flow {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .flow-node:after {
+        display: none;
+      }
+
+      .callout {
+        padding: 22px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .shell {
+        width: min(100% - 28px, 1220px);
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 0 10px;
+        min-height: 0;
+      }
+
+      .nav {
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .nav a {
+        flex: 0 0 auto;
+      }
+
+      header {
+        padding: 34px 0 30px;
+      }
+
+      h1 {
+        font-size: clamp(40px, 13vw, 58px);
+        line-height: 0.95;
+      }
+
+      .dek {
+        font-size: 18px;
+        line-height: 1.45;
+      }
+
+      section {
+        padding: 34px 0;
+      }
+
+      .kicker,
+      .section-number {
+        letter-spacing: 0.08em;
+      }
+
+      .stat,
+      .brief-panel,
+      .formula-card,
+      .gap-card,
+      .model-card,
+      .step {
+        padding: 18px;
+      }
+
+      .callout {
+        padding: 20px;
+        margin: 16px 0;
+      }
+
+      .callout p {
+        font-size: 17px;
+        line-height: 1.45;
+      }
+
+      .brief-list li {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .formula {
+        gap: 12px;
+      }
+
+      .formula-card p {
+        overflow-wrap: anywhere;
+      }
+
+      .equation {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 7px;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .equation strong {
+        color: var(--gold);
+      }
+
+      .journey {
+        gap: 10px;
+      }
+
+      .time {
+        font-size: 12px;
+      }
+
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .matrix {
+        display: block;
+        overflow-x: auto;
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="shell topbar-inner">
+      <div>ledisa funnel economics analysis</div>
+      <nav class="nav" aria-label="sections">
+        <a href="#thesis">thesis</a>
+        <a href="#journey">journey</a>
+        <a href="#economics">economics</a>
+        <a href="#copy">copy logic</a>
+        <a href="#gap">our gap</a>
+        <a href="#scale">scale map</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="shell">
+    <div class="kicker">source: loom extraction + manual frame review + transcript mapping</div>
+    <h1>how ledisa creates more paid traffic room than we do</h1>
+    <p class="dek">
+      ledisa turns each first purchase into a monetization sequence: subscription entry, one-click post-purchase expansion,
+      review capture, and dispute routing. the result is more cash, more rebill value, and more conversion support per paid visitor.
+    </p>
+
+    <div class="summary-grid" aria-label="key observations">
+      <div class="stat">
+        <span class="label">loom duration</span>
+        <span class="value">11:23</span>
+        <div class="note">checkout, post-purchase flow, review capture, dispute flow, then brandsearch growth chart.</div>
+      </div>
+      <div class="stat">
+        <span class="label">observed ledisa order</span>
+        <span class="value">$126.95</span>
+        <div class="note">the discussed order total after multiple one-click offers, compared with our current $56 aov baseline.</div>
+      </div>
+      <div class="stat">
+        <span class="label">copy claim only</span>
+        <span class="value">93%</span>
+        <div class="note">"add this to their order" is persuasive page copy, separate from measured attach rate.</div>
+      </div>
+      <div class="stat">
+        <span class="label">our post-purchase rpv</span>
+        <span class="value">$6</span>
+        <div class="note">the current post-purchase app sale rpv gives limited allowable cac expansion.</div>
+      </div>
+    </div>
+
+    <div class="brief-grid" aria-label="fast read">
+      <div class="brief-panel">
+        <span class="eyebrow">read this first</span>
+        <h2>the scale comes from paid-click yield, then proof and dispute control protect the yield.</h2>
+        <p>
+          the product promise gets the click. the subscription default, one-click expansion, review ask, and dispute path
+          decide how much traffic the brand can keep buying after facebook finds the audience.
+        </p>
+      </div>
+      <div class="brief-panel dark">
+        <span class="eyebrow">mechanical map</span>
+        <ul class="brief-list">
+          <li><strong>cash</strong><span>$56 baseline aov against a discussed $126.95 ledisa order.</span></li>
+          <li><strong>rebill</strong><span>75% subscription take rate today, ledisa framed as subscription-dominant.</span></li>
+          <li><strong>proof</strong><span>review capture happens while buyer sentiment is warm.</span></li>
+          <li><strong>retention</strong><span>dispute intent is routed into merchant support before the bank path.</span></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="thesis" class="shell">
+      <div class="section-head">
+        <div class="section-number">01 / thesis</div>
+        <div>
+          <h2>the first sale opens the monetization sequence.</h2>
+          <p class="lede">
+            ledisa's apparent media efficiency is a funnel economics effect. the initial order creates a payment-permission
+            moment, then the buyer moves through one-click offers where each next product is positioned as the missing piece
+            of the same result.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>correct model</strong>
+        <p>
+          meta scales when each paid click can produce more immediate cash, more rebill value, more public proof, and
+          fewer lost disputes. the product promise earns the click; the post-purchase system funds the buying.
+        </p>
+      </div>
+
+      <div class="formula">
+        <div class="formula-card bad">
+          <h3>our current math</h3>
+          <p>we have a real front-end business with limited post-purchase expansion today.</p>
+          <div class="equation" aria-label="current value equation">
+            <span>current value</span>
+            <strong>=</strong>
+            <span class="term">$56 aov</span>
+            <strong>+</strong>
+            <span class="term">$6 post_purchase_rpv</span>
+            <strong>+</strong>
+            <span class="term">75% subscription_take_rate</span>
+          </div>
+          <p class="mechanism">this supports paid acquisition at one ceiling. the current post-purchase layer carries a small share of the media burden.</p>
+        </div>
+        <div class="formula-card good">
+          <h3>ledisa-style math</h3>
+          <p>the buyer enters continuity, then each one-click offer increases immediate cash, trust proof, and dispute control.</p>
+          <div class="equation" aria-label="scale value equation">
+            <span>scale value</span>
+            <strong>=</strong>
+            <span class="term">base_subscription</span>
+            <strong>+</strong>
+            <span class="term">completion_upsells</span>
+            <strong>+</strong>
+            <span class="term">review_lift</span>
+            <strong>+</strong>
+            <span class="term">dispute_deflection</span>
+          </div>
+          <p class="mechanism">this gives the brand more room before the cac ceiling hits.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="journey" class="shell">
+      <div class="section-head">
+        <div class="section-number">02 / exact journey</div>
+        <div>
+          <h2>the buyer moves through a chain of newly created problems.</h2>
+          <p class="lede">
+            the pattern: validate the purchase, introduce a hidden blocker, explain a mechanism, show visual proof, then make
+            the add-on feel like the rational completion of the original purchase.
+          </p>
+        </div>
+      </div>
+
+      <div class="journey">
+        <article class="step">
+          <div class="time">0:00</div>
+          <div>
+            <h3>post-purchase begins after subscription purchase</h3>
+            <p class="mechanism">the narrator says this happens "after purchasing from the store on the 100% subscription." that means the card is already captured and the buyer is now in low-friction one-click mode.</p>
+          </div>
+          <div class="quote">"after purchasing from the store on the 100% subscription..."</div>
+          <div class="metric">moves: subscription take rate, baseline ltv, payment permission</div>
+        </article>
+
+        <article class="step">
+          <div class="time">0:11</div>
+          <div>
+            <h3>first offer: unpuff patch</h3>
+            <p class="mechanism">the offer reframes the add-on as result protection. skipping becomes the path to weaker visible results. the buyer has just paid to see results, so this creates immediate completion anxiety.</p>
+          </div>
+          <div class="quote">claim: 7 out of 10 skippers see weaker full-result outcomes.</div>
+          <div class="metric">moves: first post-purchase attach rate, regret avoidance</div>
+        </article>
+
+        <article class="step">
+          <div class="time">0:24</div>
+          <div>
+            <h3>hidden blocker: bloating delays visible transformation</h3>
+            <p class="mechanism">the copy separates real weight loss from visible weight loss. this protects the core glp-1 promise while creating a reason the original product feels incomplete on its own.</p>
+          </div>
+          <div class="quote">"bloating is often the barrier between the real transformation and seeing it show up in the mirror."</div>
+          <div class="metric">moves: perceived necessity over simple desire</div>
+        </article>
+
+        <article class="step">
+          <div class="time">0:50</div>
+          <div>
+            <h3>normalization claim and visual proof stack</h3>
+            <p class="mechanism">the screen shows a collage of women wearing patches, then a green 93% add claim. classify this as page copy: its job is to normalize the add-on and make adding feel like the default behavior.</p>
+          </div>
+          <div class="quote">"93% add this to their order."</div>
+          <div class="metric">moves: conversion rate through conformity pressure</div>
+        </article>
+
+        <article class="step">
+          <div class="time">1:20</div>
+          <div>
+            <h3>unpuff pricing is packaged as subscription/bundle economics</h3>
+            <p class="mechanism">the narrator notes a pre-sale subscription and "two months supply" as most popular. the page emphasizes price per pack, making the order expansion feel smaller than the full cart total.</p>
+          </div>
+          <div class="quote">claim: two-month supply is most popular, anchored at $22 per pack.</div>
+          <div class="metric">moves: aov, add-on subscription ltv, pack quantity</div>
+        </article>
+
+        <article class="step">
+          <div class="time">2:13</div>
+          <div>
+            <h3>second offer: extra glp-1 patches framed as a prize</h3>
+            <p class="mechanism">after accepting the first add-on, the buyer is told they "won" free patches. this uses reward language to sell more core inventory and increases immediate cash before the buyer reaches confirmation.</p>
+          </div>
+          <div class="quote">"you've just won four free glp-1 patches."</div>
+          <div class="metric">moves: core sku quantity, stock-up behavior, cash collected today</div>
+        </article>
+
+        <article class="step">
+          <div class="time">2:40</div>
+          <div>
+            <h3>loss-aversion decline copy</h3>
+            <p class="mechanism">the decline button makes the buyer affirm they understand the opportunity expires. the skip action shifts from "save money" into "lose a benefit."</p>
+          </div>
+          <div class="quote">"no thanks, i understand this opportunity will not be available again."</div>
+          <div class="metric">moves: save rate on decline, bundle take rate</div>
+        </article>
+
+        <article class="step">
+          <div class="time">3:07</div>
+          <div>
+            <h3>third offer: dopamine patch</h3>
+            <p class="mechanism">this is the most important structural insight. the upsell says the glp-1 product creates a new problem: appetite changes can reduce food reward signals, causing energy and motivation to dip.</p>
+          </div>
+          <div class="quote">"you're about to start losing weight but your energy and motivation are going to crash unless you do this."</div>
+          <div class="metric">moves: cross-sell attach rate, category expansion</div>
+        </article>
+
+        <article class="step">
+          <div class="time">3:50</div>
+          <div>
+            <h3>contrast visuals explain the dopamine problem</h3>
+            <p class="mechanism">the narrator calls out high-contrast elements and visualizations. the screen uses simple diagrams and bright blocks to turn an abstract neurotransmitter story into something legible on mobile.</p>
+          </div>
+          <div class="quote">"notice how important the contrast elements are... those visualizations cause more attention."</div>
+          <div class="metric">moves: comprehension, scroll depth, offer belief</div>
+        </article>
+
+        <article class="step">
+          <div class="time">4:29</div>
+          <div>
+            <h3>fourth offer: nad+ patch</h3>
+            <p class="mechanism">the frame shifts from weight loss to youth. now the consequence of transformation is looking tired or older, and nad+ becomes the mechanism that protects the buyer's appearance.</p>
+          </div>
+          <div class="quote">"you're taking control of your weight. now take back your youth too."</div>
+          <div class="metric">moves: beauty/anti-aging monetization, higher-ticket attach</div>
+        </article>
+
+        <article class="step">
+          <div class="time">5:30</div>
+          <div>
+            <h3>nad+ problem expands into age identity</h3>
+            <p class="mechanism">the copy says by 40 the body has lost meaningful nad stores. this is efficient because it creates self-identification for women over 35 before the buyer reports a symptom.</p>
+          </div>
+          <div class="quote">"by the time you're 40 your body has already lost maybe 50% of its natural nad stores."</div>
+          <div class="metric">moves: addressable buyer pool inside checkout</div>
+        </article>
+
+        <article class="step">
+          <div class="time">6:20</div>
+          <div>
+            <h3>priority handling upsell</h3>
+            <p class="mechanism">after emotional health/beauty offers, they switch to a simple operational offer. it is lower cognitive load and can catch buyers who are fatigued from larger decisions.</p>
+          </div>
+          <div class="quote">"secure your order and skip the weighted priority."</div>
+          <div class="metric">moves: low-cost margin add-on, shipping perception</div>
+        </article>
+
+        <article class="step">
+          <div class="time">6:36</div>
+          <div>
+            <h3>secret flash sale after decline</h3>
+            <p class="mechanism">the buyer declines, then the funnel opens a new "secret" sale. this catches low-intent remaining value from a buyer who is still present and still has one-click payment active.</p>
+          </div>
+          <div class="quote">"you get the secret flash sale."</div>
+          <div class="metric">moves: skipped-offer recovery, final aov</div>
+        </article>
+
+        <article class="step">
+          <div class="time">7:00</div>
+          <div>
+            <h3>relax patch downsell</h3>
+            <p class="mechanism">the relax patch has a looser tie to glp-1 and monetizes residual buyer attention. the narrator reads it as a broad "take something before you leave" offer.</p>
+          </div>
+          <div class="quote">"this honestly seems more like an exit offer for those who are already over there."</div>
+          <div class="metric">moves: long-tail aov from remaining inventory</div>
+        </article>
+
+        <article class="step">
+          <div class="time">7:20</div>
+          <div>
+            <h3>focus patch branch</h3>
+            <p class="mechanism">after another skip, the funnel still presents another sku. this shows the system is optimized for exhaustive extraction of order value before order completion.</p>
+          </div>
+          <div class="quote">"and now the focus patches... another upsell."</div>
+          <div class="metric">moves: marginal revenue from skip traffic</div>
+        </article>
+
+        <article class="step">
+          <div class="time">7:35</div>
+          <div>
+            <h3>order completion and founder-style message</h3>
+            <p class="mechanism">after aggressive monetization, the tone softens. "nicole from the ledisa family" reframes the purchase as joining a caring wellness ritual, reducing buyer's remorse.</p>
+          </div>
+          <div class="quote">"wellness should be easy, consistent and work with your body."</div>
+          <div class="metric">moves: post-purchase sentiment, refund resistance</div>
+        </article>
+
+        <article class="step">
+          <div class="time">8:10</div>
+          <div>
+            <h3>review capture at peak emotion</h3>
+            <p class="mechanism">the buyer is asked to rate the experience immediately after the warm message. this routes peak post-purchase sentiment into public trust before the product experience begins.</p>
+          </div>
+          <div class="quote">"after this personal message they ask you for a review."</div>
+          <div class="metric">moves: review volume, trustpilot rating, ad/pdp trust</div>
+        </article>
+
+        <article class="step">
+          <div class="time">9:10</div>
+          <div>
+            <h3>email confirmation includes disputifier flow</h3>
+            <p class="mechanism">the order email contains a dispute/chargeback pathway. this intercepts unhappy buyers before they call the bank, giving the brand a chance to prevent formal chargebacks.</p>
+          </div>
+          <div class="quote">"they even have a dispute survey."</div>
+          <div class="metric">moves: chargeback rate, processor health, cash retention</div>
+        </article>
+
+        <article class="step">
+          <div class="time">10:20</div>
+          <div>
+            <h3>bank dispute deflection</h3>
+            <p class="mechanism">the final screen asks the buyer to use the merchant path before the bank path and claims banks can take up to 90 days. the buyer is nudged into the merchant-controlled process.</p>
+          </div>
+          <div class="quote">message: use the merchant path before the bank dispute path.</div>
+          <div class="metric">moves: dispute containment, refund routing, payment account survival</div>
+        </article>
+
+        <article class="step">
+          <div class="time">10:50</div>
+          <div>
+            <h3>growth chart now makes sense</h3>
+            <p class="mechanism">the narrator returns to brandsearch and connects the funnel to the traffic hockey stick. the explanation becomes buyer monetization: better economics make more ads affordable.</p>
+          </div>
+          <div class="quote">"subscription, high aov, high amount of upsells, everything."</div>
+          <div class="metric">moves: allowable cac, budget scaling ceiling</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="economics" class="shell">
+      <div class="section-head">
+        <div class="section-number">03 / efficiency</div>
+        <div>
+          <h2>the funnel increases allowable cac by stacking five efficiency layers.</h2>
+          <p class="lede">
+            the store becomes efficient because it raises expected revenue per acquired buyer at multiple points after the
+            first click. every mechanism below either increases cash today, increases rebill value, increases future conversion
+            through trust, or prevents value leakage after purchase.
+          </p>
+        </div>
+      </div>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>economic lever</th>
+            <th>where it appears</th>
+            <th>why it matters</th>
+            <th>what to measure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>subscription-first base order</td>
+            <td>initial purchase and unpuff offer</td>
+            <td>turns a paid click into a continuity relationship. our current subscription take rate is 75%; the loom repeatedly implies ledisa's selection is much more dominant.</td>
+            <td>subscription take rate, first rebill success, cancel rate before second shipment, revenue weighted by subscription cohort</td>
+          </tr>
+          <tr>
+            <td>one-click post-purchase offers</td>
+            <td>unpuff, glp bundle, dopamine, nad+, priority, relax, focus</td>
+            <td>after payment, the buyer stays in one-click mode. each accepted offer adds high-friction-free revenue. this is where our $6 post-purchase rpv currently carries too little media burden.</td>
+            <td>attach rate per offer, post-purchase rpv, revenue per purchaser, drop-off per step, accepted revenue by offer position</td>
+          </tr>
+          <tr>
+            <td>completion-product framing</td>
+            <td>weaker full-result outcome, bloating, dopamine crash, tired/older look</td>
+            <td>the add-on is framed as protecting the original result. this is why it can convert better than a generic "also buy this" shelf.</td>
+            <td>offer conversion compared with neutral product upsell copy, refund rate by accepted offer, attach rate by original ad angle</td>
+          </tr>
+          <tr>
+            <td>quantity and per-pack anchoring</td>
+            <td>two-month supply, $22 per pack, $10 per pack, free patch bundle</td>
+            <td>buyers evaluate the smaller unit price while the brand collects a larger total order.</td>
+            <td>packs per order, total order value, refund rate by pack count</td>
+          </tr>
+          <tr>
+            <td>review capture before product experience</td>
+            <td>post-confirmation personal message into rating prompt</td>
+            <td>public trust improves while the buyer is still emotionally validated, increasing future pdp/ad conversion. their trustpilot appears around 4.2 in the loom; ours is 3.8 and the target is above 4.4.</td>
+            <td>review request conversion, rating distribution, trustpilot score, review timing after order, cv uplift from rating movement</td>
+          </tr>
+          <tr>
+            <td>chargeback interception</td>
+            <td>disputifier survey and bank-dispute redirect message</td>
+            <td>protects processor health and keeps more value inside the merchant-controlled support path. we currently have beautifier-style prevention data; ledisa adds the deflection workflow.</td>
+            <td>chargeback rate, dispute form starts, dispute deflection, support resolution time, recovered revenue</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>why facebook can scale</strong>
+        <p>
+          if the average ledisa buyer exits near the observed $126.95 while our current aov is $56 plus $6 post-purchase rpv,
+          ledisa can pay meaningfully more for the same quality buyer. that is the mechanical explanation for facebook growth
+          through a higher spend ceiling.
+        </p>
+      </div>
+    </section>
+
+    <section id="copy" class="shell">
+      <div class="section-head">
+        <div class="section-number">04 / copy logic</div>
+        <div>
+          <h2>each offer uses the same psychological machine.</h2>
+          <p class="lede">
+            the flow is modular. this is why it can be scaled across product categories. the product changes while the underlying
+            persuasion engine stays the same.
+          </p>
+        </div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-node">
+          <b>1. affirm the buyer</b>
+          <span>you made the right choice. you are on the right path.</span>
+        </div>
+        <div class="flow-node">
+          <b>2. reveal blocker</b>
+          <span>one hidden issue can slow or hide results.</span>
+        </div>
+        <div class="flow-node">
+          <b>3. name mechanism</b>
+          <span>bloating, dopamine, nad+, water retention, reward signals.</span>
+        </div>
+        <div class="flow-node">
+          <b>4. visualize problem</b>
+          <span>simple diagrams, before/after imagery, face/body proof.</span>
+        </div>
+        <div class="flow-node">
+          <b>5. normalize adding</b>
+          <span>most popular, 93% add, customers like you, limited opportunity.</span>
+        </div>
+        <div class="flow-node">
+          <b>6. one-click add</b>
+          <span>subscription or bundle anchored by low per-pack price.</span>
+        </div>
+      </div>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>offer</th>
+            <th>base purchase creates this new fear</th>
+            <th>mechanism used</th>
+            <th>economic job</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>unpuff patch</td>
+            <td>the weight loss may happen while the mirror shows bloating.</td>
+            <td>bloating, water retention, delayed visible results.</td>
+            <td>first high-converting add-on because it protects the main promise.</td>
+          </tr>
+          <tr>
+            <td>extra glp-1 patches</td>
+            <td>your supply may run short, or this rare deal may expire.</td>
+            <td>lucky winner, free patches, stock-up, scarcity.</td>
+            <td>moves more core inventory and raises cash collected today.</td>
+          </tr>
+          <tr>
+            <td>dopamine patch</td>
+            <td>as cravings decrease, food reward signals may shift and energy may drop.</td>
+            <td>dopamine recalibration, motivation crash, neurotransmitter dip.</td>
+            <td>expands from appetite control into mood and energy.</td>
+          </tr>
+          <tr>
+            <td>nad+ patch</td>
+            <td>body transformation may make you look tired or older.</td>
+            <td>cellular energy, nad+ decline, age-related depletion.</td>
+            <td>expands from weight loss into youth/beauty, likely higher willingness to pay.</td>
+          </tr>
+          <tr>
+            <td>priority handling</td>
+            <td>you may wait longer or receive slower handling.</td>
+            <td>speed, protection, order priority.</td>
+            <td>simple margin add-on after higher-cognitive-load health offers.</td>
+          </tr>
+          <tr>
+            <td>relax/focus patches</td>
+            <td>remaining wellness problems may still be unsolved.</td>
+            <td>secret sale, flash discount, final chance.</td>
+            <td>recovers value from buyers who rejected stronger offers.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="gap" class="shell">
+      <div class="section-head">
+        <div class="section-number">05 / our gap</div>
+        <div>
+          <h2>the gap is the spread between their buyer value and ours.</h2>
+          <p class="lede">
+            your loom comments matter because they identify the exact places where ledisa extracts more value from the same
+            acquired buyer. every layer gives meta more room to breathe.
+          </p>
+        </div>
+      </div>
+
+      <div class="gap-grid">
+        <div class="gap-card">
+          <div class="label">gap 01</div>
+          <h3>aov depth</h3>
+          <p>our current aov is $56. the ledisa loom order reaches about $126.95 after the post-purchase sequence.</p>
+          <ul>
+            <li>their order can be roughly 2.3x our current aov before rebills.</li>
+            <li>that difference directly expands allowable cac.</li>
+            <li>the delta is created after purchase and on the pdp.</li>
+          </ul>
+        </div>
+
+        <div class="gap-card">
+          <div class="label">gap 02</div>
+          <h3>post-purchase rpv</h3>
+          <p>our post-purchase app sale rpv is about $6. ledisa has a ladder: unpuff, glp bundle, dopamine, nad+, priority, relax, focus.</p>
+          <ul>
+            <li>their first add-on protects the main result.</li>
+            <li>their next offers create new result blockers.</li>
+            <li>their skip traffic is still monetized with exit offers.</li>
+          </ul>
+        </div>
+
+        <div class="gap-card">
+          <div class="label">gap 03</div>
+          <h3>subscription take rate</h3>
+          <p>our subscription take rate is 75%. the loom frames ledisa as having an almost fully subscription-dominant purchase path.</p>
+          <ul>
+            <li>the subscription offer is visually and economically clearer.</li>
+            <li>subscription can live on the first product and on upsells.</li>
+            <li>this affects both immediate aov and expected rebill ltv.</li>
+          </ul>
+        </div>
+
+        <div class="gap-card">
+          <div class="label">gap 04</div>
+          <h3>public trust score</h3>
+          <p>our trustpilot is 3.8. the target is above 4.4. ledisa is shown around 4.2 in the loom and appears to route happy post-purchase sentiment into review capture.</p>
+          <ul>
+            <li>higher rating lifts cold traffic conversion.</li>
+            <li>review volume makes aggressive claims feel more believable to buyers.</li>
+            <li>the review ask happens when the buyer feels welcomed and after support wins.</li>
+          </ul>
+        </div>
+
+        <div class="gap-card">
+          <div class="label">gap 05</div>
+          <h3>chargeback path</h3>
+          <p>we have beautifier-style chargeback prevention data. ledisa shows a merchant-controlled deflection journey through the disputifier survey in the loom.</p>
+          <ul>
+            <li>their buyer is given an internal path before the bank path.</li>
+            <li>the flow captures order number, amount, reason, and phone.</li>
+            <li>this can reduce processor damage and keep more disputes in support.</li>
+          </ul>
+        </div>
+
+        <div class="gap-card">
+          <div class="label">gap 06</div>
+          <h3>offer-story continuity</h3>
+          <p>their post-purchase products follow one transformation story. every offer extends the original promise into a new consequence.</p>
+          <ul>
+            <li>glp-1 creates the appetite result.</li>
+            <li>unpuff makes the result visible.</li>
+            <li>dopamine protects motivation.</li>
+            <li>nad+ protects youth and glow.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="scale" class="shell">
+      <div class="section-head">
+        <div class="section-number">06 / scale map</div>
+        <div>
+          <h2>what has to change for us to get the same media freedom.</h2>
+          <p class="lede">
+            this is the mechanical interpretation: if we want the same scale behavior, we need the same economic behavior. the
+            flow has to raise post-purchase rpv, subscription ltv, trust conversion, and dispute retention enough that meta can
+            spend more while holding contribution margin.
+          </p>
+        </div>
+      </div>
+
+      <div class="operating-model">
+        <div class="model-card">
+          <h3>priority 1: post-purchase rpv</h3>
+          <ul>
+            <li>current: $6 post-purchase rpv.</li>
+            <li>needed: a ladder where offer 1 is a result-completion product rather than a generic cross-sell.</li>
+            <li>measure: rpv by offer step and total aov.</li>
+            <li>win condition: post-purchase rpv becomes large enough to move allowable cac.</li>
+          </ul>
+        </div>
+
+        <div class="model-card">
+          <h3>priority 2: subscription clarity</h3>
+          <ul>
+            <li>current: 75% subscription take rate.</li>
+            <li>needed: make subscription value, cadence, and savings structurally obvious at the offer level.</li>
+            <li>measure: subscription take rate by landing page, ad angle, and pack option.</li>
+            <li>win condition: more buyers enter continuity while front-end conversion holds.</li>
+          </ul>
+        </div>
+
+        <div class="model-card">
+          <h3>priority 3: trustpilot lift</h3>
+          <ul>
+            <li>current: 3.8 trustpilot.</li>
+            <li>target: above 4.4.</li>
+            <li>needed: capture high-sentiment moments after purchase and after support wins.</li>
+            <li>measure: rating movement, review request conversion, and pdp conversion lift from rating changes.</li>
+          </ul>
+        </div>
+
+        <div class="model-card">
+          <h3>priority 4: dispute deflection</h3>
+          <ul>
+            <li>current: beautifier-style prevention data; deflection journey pending.</li>
+            <li>needed: an internal route for unknown-charge and refund/dispute intent.</li>
+            <li>measure: dispute form starts, support saves, chargeback rate, recovered revenue.</li>
+            <li>win condition: more buyers enter support before bank dispute, and support gets structured data first.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>the scale equation</strong>
+        <p>
+          ledisa's growth makes sense when the funnel turns a buyer into higher immediate aov, higher subscription value,
+          higher public trust, and lower value leakage. our current bottleneck includes ad creative plus buyer value after
+          payment: $56 aov plus $6 post-purchase rpv creates a tighter spend ceiling.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    created from the extracted loom transcript and frame review. local source video was stored in temporary space and left out of the commit.
+  </footer>
+</body>
+</html>
