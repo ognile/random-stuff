@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nuora Purchase Friction Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #20231f;
+      --muted: #6a6f67;
+      --faint: #e7e9e2;
+      --paper: #f7f8f4;
+      --surface: #ffffff;
+      --accent: #637a58;
+      --accent-dark: #3e5138;
+      --line: rgba(32, 35, 31, 0.14);
+      --soft: rgba(99, 122, 88, 0.12);
+      --shadow: 0 24px 70px rgba(32, 35, 31, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(99, 122, 88, 0.11), transparent 32rem),
+        linear-gradient(180deg, #fafbf8 0%, var(--paper) 48%, #f1f3ee 100%);
+      color: var(--ink);
+      font-family: "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.24;
+      background-image:
+        linear-gradient(rgba(32, 35, 31, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(32, 35, 31, 0.035) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 76%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(1420px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 18px;
+      padding: 10px 10px 10px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 16px 50px rgba(32, 35, 31, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(18px);
+      z-index: 3;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 7px solid var(--ink);
+      box-shadow: inset 0 0 0 2px var(--surface);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), background 220ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      background: var(--soft);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      min-height: 88dvh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 46px;
+      align-items: end;
+      padding: 150px 0 72px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 24px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent-dark);
+      background: rgba(255, 255, 255, 0.68);
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.55; }
+      50% { transform: scale(1.9); opacity: 1; }
+    }
+
+    h1 {
+      max-width: 1060px;
+      margin: 0;
+      font-size: clamp(54px, 7.4vw, 112px);
+      line-height: 0.9;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(18px, 1.5vw, 23px);
+      line-height: 1.45;
+    }
+
+    .source-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      max-width: 760px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: var(--line);
+      box-shadow: var(--shadow);
+      transform: translateY(18px);
+    }
+
+    .source-cell {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.82);
+      min-height: 156px;
+    }
+
+    .source-cell strong {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .source-cell span {
+      display: block;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: clamp(32px, 4vw, 58px);
+      line-height: 1;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .section {
+      padding: 96px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.84fr) minmax(280px, 0.36fr);
+      gap: 60px;
+      align-items: end;
+      margin-bottom: 42px;
+    }
+
+    h2 {
+      max-width: 920px;
+      margin: 0;
+      font-size: clamp(40px, 5.5vw, 88px);
+      line-height: 0.94;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.48;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.58fr) minmax(0, 1.42fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .metric-panel {
+      position: sticky;
+      top: 106px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: var(--shadow);
+    }
+
+    .metric-panel h3 {
+      margin: 0 0 22px;
+      font-size: 21px;
+      line-height: 1.15;
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .metric-item {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 13px;
+      align-items: baseline;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+    }
+
+    .metric-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .metric-item .num {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--accent-dark);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .metric-item .label {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.28;
+    }
+
+    .takeaway {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.38;
+    }
+
+    .quote-table {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      padding: 17px 20px;
+      background: #f0f3ec;
+      color: var(--accent-dark);
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 22px 20px;
+      font-size: clamp(16px, 1.28vw, 19px);
+      line-height: 1.48;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr {
+      transition: background 240ms cubic-bezier(0.16, 1, 0.3, 1), transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    tbody tr:hover {
+      background: #fafbf8;
+    }
+
+    .rank {
+      width: 74px;
+      color: var(--accent-dark);
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .quote {
+      max-width: 940px;
+    }
+
+    .quote::before {
+      content: open-quote;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .quote::after {
+      content: close-quote;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .footer {
+      padding: 54px 0 84px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .footer code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      animation: rise 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    @keyframes rise {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .shell {
+        width: min(100% - 28px, 760px);
+      }
+
+      .nav {
+        align-items: flex-start;
+        border-radius: 24px;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .hero,
+      .section-head,
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 64px 0 46px;
+        gap: 34px;
+      }
+
+      .source-strip {
+        grid-template-columns: 1fr;
+        transform: none;
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .section-head {
+        gap: 22px;
+      }
+
+      .metric-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .nav {
+        position: static;
+      }
+
+      .nav-links a {
+        padding: 8px 10px;
+      }
+
+      h1 {
+        font-size: clamp(46px, 16vw, 74px);
+      }
+
+      h2 {
+        font-size: clamp(36px, 13vw, 58px);
+      }
+
+      th:nth-child(1),
+      td:nth-child(1) {
+        display: none;
+      }
+
+      th, td {
+        padding: 17px 15px;
+      }
+
+      .quote-table {
+        border-radius: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav shell" aria-label="Report navigation">
+    <a class="brand" href="#top" aria-label="Nuora purchase friction report">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Nuora friction report</span>
+    </a>
+    <div class="nav-links">
+      <a href="#verification">Verification</a>
+      <a href="#flow">Flow</a>
+      <a href="#notes">Notes</a>
+    </div>
+  </nav>
+
+  <main id="top">
+    <header class="hero shell">
+      <div class="reveal" style="--i: 0">
+        <p class="eyebrow">Post-purchase survey analysis</p>
+        <h1>What almost stopped the purchase.</h1>
+        <p class="hero-copy">Two friction clusters from the website survey: missing product proof, and an unstable buying flow. Quotes are verbatim.</p>
+        <div class="source-strip" aria-label="Source counts">
+          <div class="source-cell">
+            <strong>Website-friction responses</strong>
+            <span>9,822</span>
+          </div>
+          <div class="source-cell">
+            <strong>Selected verbatim quotes</strong>
+            <span>40</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="verification" class="section shell">
+      <div class="section-head reveal" style="--i: 0">
+        <h2>Product verification friction.</h2>
+        <p class="section-note">Combined buckets: number four, unclear dosage or bottle supply, and number six, ingredient transparency or back-of-bottle concern.</p>
+      </div>
+
+      <div class="split-grid">
+        <aside class="metric-panel reveal" style="--i: 1">
+          <h3>Deeper split</h3>
+          <ul class="metric-list">
+            <li class="metric-item"><span class="num">159</span><span class="label">Dosage or how many to take</span></li>
+            <li class="metric-item"><span class="num">110</span><span class="label">Ingredient list or ingredient amounts</span></li>
+            <li class="metric-item"><span class="num">64</span><span class="label">Back-of-bottle, label, or facts panel missing</span></li>
+            <li class="metric-item"><span class="num">53</span><span class="label">Bottle duration or supply unclear</span></li>
+            <li class="metric-item"><span class="num">313</span><span class="label">Combined unique responses</span></li>
+          </ul>
+          <p class="takeaway">Core issue: she cannot verify what she is putting in her body, how much she is taking, or how long one bottle lasts.</p>
+        </aside>
+
+        <div class="quote-table reveal" style="--i: 2">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Verbatim quote</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="rank">01</td><td class="quote">I wanted to see a picture of the back of the bottle where I could see actual amounts of each ingredient and instructions of how many to take. Is a bottle for a month or 2??????</td></tr>
+              <tr><td class="rank">02</td><td class="quote">I wanted a picture if the label on back of the bottle to show ingredients. Couldn't find one. That disappointed me. Website says vegan. But never mentioned what the capsule is made of. I have a pork/gelatin sever allergy. So I'm a bit concerned what the capsule is made of. I've seen vegan ingredients in a gelatin capsule before. Hoping these aren't. Or they will be returned.</td></tr>
+              <tr><td class="rank">03</td><td class="quote">I did not like that the website used a different language and called the supplement “gut ritual” but the photo off the bottle‘s image says “complete women’s balance”. You are calling the product two different names, it’s confusing. I did not like that the image neglected to show the backside of the bottle with the nutrition/ingredients label.</td></tr>
+              <tr><td class="rank">04</td><td class="quote">One thing I noticed on the website is that there is a lot of emphasis on testimonials and marketing claims, but I would love to see a little more detailed information about the science behind the ingredients and how the formula works in the body. As someone who is really interested in gut health and root-cause healing, having that deeper educational content would build even more trust and confidence in the product.</td></tr>
+              <tr><td class="rank">05</td><td class="quote">Hard to see ingredients, nutrition facts, serving size etc. Since I do not eat sugar, I didn't know what was in the gummies. So when they were offered to me after purchase I could not view any of the nutrition facts so couldn't purchase.</td></tr>
+              <tr><td class="rank">06</td><td class="quote">I accessed the site on my phone. I didnt like that I couldn't find what a serving size was. I couldn't see a picture of the label/back of the bottle with serving size info. I did a separate Google search to determine how many bottles = how many servings so I could order an amount that made sense to me. Thanks for asking that.</td></tr>
+              <tr><td class="rank">07</td><td class="quote">That you did not show the ingredients list on the back of the bottle. I usually don't order any items without seeing the ingredients list but your money back guarantee decided for me. I have Celiac's disease and need to see all ingredients even though you list GF on your site.</td></tr>
+              <tr><td class="rank">08</td><td class="quote">If I remember right I couldn't see the nutrition label. I screenshot most of it from an add on FB but I emailed your company to see how big the capsules are and I never received a response. The product on FB says 3 capsules is a serving and fb says 2 capsules.</td></tr>
+              <tr><td class="rank">09</td><td class="quote">If it said somewhere how many pills are in a bottle I missed it. I’m assuming it’s at least 60 and a bottle is a months supply but I’m not sure.</td></tr>
+              <tr><td class="rank">10</td><td class="quote">I couldn’t get a clear answer on dosage. Ie is a 60 capsule bottle a month supply. I’d prefer to be able to read all of the label online before ordering.</td></tr>
+              <tr><td class="rank">11</td><td class="quote">Does not say how many capsules are in each bottle (have to zoom in on picture for the answer) & does not put the daily dose on the site either (but I am guessing 2 capsules daily bc there are 60 in the bottle)</td></tr>
+              <tr><td class="rank">12</td><td class="quote">I would prefer to see a photo of the ingredients label so I could see the daily dose for each product too.</td></tr>
+              <tr><td class="rank">13</td><td class="quote">I didn't see a serving size to see how long each bottle would last--please show the nutrition label</td></tr>
+              <tr><td class="rank">14</td><td class="quote">I couldn't see instructions for how to take it. Is 60 capsules a 1 month supply? 2 a day? With or without food? I searched everywhere and couldn't find it</td></tr>
+              <tr><td class="rank">15</td><td class="quote">Not being able to see the back of the bottle (ie, dosage and mg of each of the ingredients.</td></tr>
+              <tr><td class="rank">16</td><td class="quote">I couldn't find the nutritional information or dosage recommendation (ie. Take two capsules in the morning on an empty stomach, or one capsule after a meal, etc). You have a picture of the front of the bottles but not the back. I also don't like gimmicky "but wait" advertising either.</td></tr>
+              <tr><td class="rank">17</td><td class="quote">Not seeing the actual full label of the bottle. I would like to see dosages, full list of ingredients, just simple transparency in your product.</td></tr>
+              <tr><td class="rank">18</td><td class="quote">The list of ingredients and their amounts is not included. That should be visible for customers to see and assess. I almost passed up purchasing this product because of this.</td></tr>
+              <tr><td class="rank">19</td><td class="quote">Ingredient are not easily found or the amounts. I take berberine and was swapping my berberine for your product but couldn't find mg. information. Please assist.</td></tr>
+              <tr><td class="rank">20</td><td class="quote">I couldn’t see the label to see the ingredients. Also to know if they’re gluten free. I have an allergy.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="flow" class="section shell">
+      <div class="section-head reveal" style="--i: 0">
+        <h2>Buying-flow instability.</h2>
+        <p class="section-note">Combined buckets: number seven, navigation confusion, number eight, price or deal confusion, and number nine, checkout or payment problems.</p>
+      </div>
+
+      <div class="split-grid">
+        <aside class="metric-panel reveal" style="--i: 1">
+          <h3>Deeper split</h3>
+          <ul class="metric-list">
+            <li class="metric-item"><span class="num">133</span><span class="label">Navigation, find, or link confusion</span></li>
+            <li class="metric-item"><span class="num">113</span><span class="label">Price, deal, discount, or guarantee confusion</span></li>
+            <li class="metric-item"><span class="num">95</span><span class="label">Technical checkout, payment, or cart issue</span></li>
+            <li class="metric-item"><span class="num">326</span><span class="label">Combined unique responses</span></li>
+          </ul>
+          <p class="takeaway">Core issue: the buying flow makes the order feel unstable. Price changes, cart changes, guarantee changes, product path changes, or payment breaks.</p>
+        </aside>
+
+        <div class="quote-table reveal" style="--i: 2">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Verbatim quote</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="rank">01</td><td class="quote">I can't tell how often my subscription will come, if it will stay $69 or go to a higher price, how to cancel if it doesn't work out. Everywhere it says a 60-day money-back guarantee, until you check out and it suddenly flips to a 30-day guarantee. Not very transparent. You say you have 12,000 five-star reviews but I can only see a handful on your page.</td></tr>
+              <tr><td class="rank">02</td><td class="quote">After I clicked that I wanted the 2 bundle deal, I unchecked the box for the auto renew and it changed my order to the more expensive 3 bundle deal. I had to take it out of my cart and redo it making sure I reselected the 2 bundle deal before adding to cart. Thankfully I caught it, but others may not.</td></tr>
+              <tr><td class="rank">03</td><td class="quote">The pricing was confusing until final check out. I had to empty my cart and retry several times.</td></tr>
+              <tr><td class="rank">04</td><td class="quote">The savings of $10. Was confusing, it ended up being the same price to begin with.</td></tr>
+              <tr><td class="rank">05</td><td class="quote">The website was easy to use and looks nice. I don’t have anything I don’t like. The one thing that would be nice to see is when you order the three bottles, it would be nice for it to say three bottles in the cart. It currently says one item. That is a bit confusing.</td></tr>
+              <tr><td class="rank">06</td><td class="quote">It looked less legitimate when I saw the check out area and all the cheesy slashed prices, just list one price and call it good I don't need to be shown the previous prices slashed out</td></tr>
+              <tr><td class="rank">07</td><td class="quote">I couldn't find a clear enough description for how much a subscription would cost after the initial purchase. Would it still be $69 the next time I'd get billed or would it be $195?</td></tr>
+              <tr><td class="rank">08</td><td class="quote">The only thing is that I couldn’t find anything on weather or not the sale price will be the price I continue to pay for auto shipping every 2 months or will it go up to the regular prices of the product</td></tr>
+              <tr><td class="rank">09</td><td class="quote">The checkout process. I kept unlocking the monthly subscription box and it would automatically change my order to 3 bottles. I am not ready for that commitment yet since I also have to run this past my endocrinologist. Also seems to be a dodgy money grab.</td></tr>
+              <tr><td class="rank">10</td><td class="quote">Don't want to feel pressured to buy additional items. One area says a 30 day, money back guarantee another area since 60 days.So that's confusing</td></tr>
+              <tr><td class="rank">11</td><td class="quote">I hear there's trouble with stopping reorders and such but so far my only bad experience was trying to take something out of my cart. I had to go out of the site and come back in later.</td></tr>
+              <tr><td class="rank">12</td><td class="quote">The website seems good, I would say the purchase button needs tweaked. If I wanted to get a second product I had to go back to the site to find it. I was sent to the checkout instead of a cart view option.</td></tr>
+              <tr><td class="rank">13</td><td class="quote">In one spot it says 60 day money back guarantee, in another it says 30 days. It is confusing</td></tr>
+              <tr><td class="rank">14</td><td class="quote">i used a specific link and was able to get here quickly. I don't like how it was hard to edit my cart. It kept skipping to the payment page.</td></tr>
+              <tr><td class="rank">15</td><td class="quote">Wasn't able to pay with PayPal Was unclear what the next billing cycle would cost</td></tr>
+              <tr><td class="rank">16</td><td class="quote">Initially there was an error when I tried to use Apple Pay, and I had to go through again without using the pay now button</td></tr>
+              <tr><td class="rank">17</td><td class="quote">Had to fix my cart multiple times for correct pricing</td></tr>
+              <tr><td class="rank">18</td><td class="quote">The website was great- easy to navigate. I will say that I tried to use a credit card and although I put in the 3 digit security code, it was saying that there needed to be 4 digits.</td></tr>
+              <tr><td class="rank">19</td><td class="quote">I wanted the gut health supplements and first found the vaginal ones and couldn’t navigate to the gut health ones on that site/page. I got a new link.</td></tr>
+              <tr><td class="rank">20</td><td class="quote">I wish the website showed all of their products more clearly. When I first searched for Nuora, the gummies came up right away in the search results, and that’s not what I was interested in, so it was a little confusing to find what I was actually looking for.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="notes" class="footer shell">
+    <p>Source file: <code>/Users/nikitalienov/Downloads/Gut_Capsules_Post_Purchase_Survey_2026-01-01_to_2026-05-03.csv</code>. Counts are coded mentions from the website-friction column. A single response can appear in multiple sub-patterns when the customer names more than one issue.</p>
+  </footer>
+</body>
+</html>
