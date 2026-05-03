@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ledisa Flow Breakdown Demo</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --paper: #fffaf0;
+      --ink: #191814;
+      --muted: #675f54;
+      --line: #d9d0c0;
+      --red: #a93425;
+      --green: #11624d;
+      --amber: #b87918;
+      --black: #17140f;
+      --soft: #ebe3d5;
+      --blue: #193857;
+      --mono: "SFMono-Regular", "Cascadia Mono", "Roboto Mono", Consolas, monospace;
+      --sans: "Avenir Next", "Satoshi", "Helvetica Neue", Helvetica, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background:
+        linear-gradient(rgba(25, 24, 20, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 24, 20, 0.045) 1px, transparent 1px),
+        var(--bg);
+      background-size: 28px 28px;
+      color: var(--ink);
+      font-family: var(--sans);
+      text-transform: lowercase;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      border-bottom: 1px solid var(--line);
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar .wrap {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand,
+    .nav {
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .brand {
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav a {
+      white-space: nowrap;
+    }
+
+    .hero {
+      padding: 70px 0 34px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.72);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--green);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 1090px;
+      margin-top: 26px;
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 104px);
+      line-height: 0.9;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .dek {
+      max-width: 820px;
+      margin-top: 28px;
+      font-family: var(--serif);
+      font-size: clamp(23px, 2.8vw, 38px);
+      line-height: 1.22;
+      color: #3a342d;
+    }
+
+    .growth-strip {
+      margin-top: 46px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr 1.05fr 1.45fr;
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.68);
+    }
+
+    .growth-cell {
+      min-width: 0;
+      padding: 22px 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .growth-cell:last-child {
+      border-right: 0;
+    }
+
+    .label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .num {
+      display: block;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .note {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .route {
+      margin: 32px 0 42px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: #fff7e8;
+    }
+
+    .route-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .route-step {
+      padding: 20px 16px 22px;
+      border-right: 1px solid rgba(255, 247, 232, 0.18);
+    }
+
+    .route-step:last-child {
+      border-right: 0;
+    }
+
+    .route-step b {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #e4aa55;
+      letter-spacing: 0.08em;
+    }
+
+    .route-step span {
+      display: block;
+      font-family: var(--serif);
+      font-size: 21px;
+      line-height: 1.12;
+    }
+
+    section {
+      padding: 54px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(160px, 0.55fr) minmax(0, 1.45fr);
+      gap: 54px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+
+    .tag {
+      padding-top: 10px;
+      border-top: 3px solid var(--amber);
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.09em;
+      color: var(--amber);
+    }
+
+    h2 {
+      max-width: 900px;
+      font-family: var(--serif);
+      font-size: clamp(38px, 5vw, 70px);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 770px;
+      margin-top: 18px;
+      font-family: var(--serif);
+      font-size: clamp(20px, 2.2vw, 30px);
+      line-height: 1.25;
+      color: #4a4037;
+    }
+
+    .plain-grid {
+      display: grid;
+      grid-template-columns: 0.88fr 1.12fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .black-panel,
+    .paper-panel {
+      border: 1px solid var(--line);
+      padding: clamp(22px, 3vw, 38px);
+    }
+
+    .black-panel {
+      background: var(--black);
+      color: #fff7e8;
+      border-color: var(--black);
+    }
+
+    .black-panel .label {
+      color: #d29b45;
+    }
+
+    .black-panel p {
+      margin-top: 14px;
+      font-family: var(--serif);
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1.16;
+    }
+
+    .paper-panel {
+      background: rgba(255, 250, 240, 0.76);
+    }
+
+    .mechanics {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+      margin-top: 8px;
+    }
+
+    .mechanic {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 22px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mechanic b {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--green);
+    }
+
+    .mechanic span {
+      font-family: var(--serif);
+      font-size: 22px;
+      line-height: 1.22;
+    }
+
+    .before-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.1fr 0.95fr;
+      gap: 18px;
+    }
+
+    .screen {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .screen-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+    }
+
+    .screen-body {
+      padding: 22px;
+    }
+
+    .screen h3 {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .screen p {
+      margin-top: 14px;
+      font-size: 17px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .mini-ui {
+      margin-top: 20px;
+      display: grid;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .mini-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 11px;
+      background: var(--soft);
+      color: #342f29;
+      min-width: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      width: fit-content;
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      background: #fffdf7;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--green);
+      letter-spacing: 0.06em;
+    }
+
+    .ladder {
+      display: grid;
+      gap: 14px;
+    }
+
+    .step-card {
+      display: grid;
+      grid-template-columns: 76px minmax(0, 0.95fr) minmax(260px, 1.05fr);
+      gap: 18px;
+      align-items: stretch;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.72);
+    }
+
+    .time {
+      padding: 18px 14px;
+      border-right: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .step-copy {
+      padding: 18px 0;
+      min-width: 0;
+    }
+
+    .step-copy h3 {
+      font-family: var(--serif);
+      font-size: clamp(25px, 2.6vw, 36px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .step-copy p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.42;
+    }
+
+    .frame {
+      margin: 12px;
+      min-width: 0;
+      border-left: 4px solid var(--green);
+      background: var(--black);
+      color: #fff7e8;
+      padding: 17px;
+      display: grid;
+      align-content: center;
+      gap: 10px;
+    }
+
+    .frame .small {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #d29b45;
+      letter-spacing: 0.08em;
+    }
+
+    .frame .quote {
+      font-family: var(--serif);
+      font-size: clamp(20px, 2.1vw, 30px);
+      line-height: 1.12;
+    }
+
+    .frame .move {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.35;
+      color: #c9c0ad;
+    }
+
+    .frame.red {
+      border-left-color: var(--red);
+    }
+
+    .frame.amber {
+      border-left-color: var(--amber);
+    }
+
+    .frame.blue {
+      border-left-color: var(--blue);
+    }
+
+    .callout-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 26px;
+    }
+
+    .callout-box {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.78);
+      padding: 24px;
+    }
+
+    .callout-box h3 {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1;
+    }
+
+    .callout-box p,
+    .callout-box li {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.43;
+    }
+
+    .callout-box p {
+      margin-top: 12px;
+    }
+
+    ul {
+      margin: 16px 0 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 9px;
+    }
+
+    .deflection {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .fake-form {
+      border: 1px solid var(--line);
+      background: #fffdf7;
+      padding: 20px;
+      font-family: var(--mono);
+    }
+
+    .fake-form label {
+      display: block;
+      margin-top: 14px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .fake-form .input {
+      margin-top: 6px;
+      padding: 12px;
+      background: var(--soft);
+      color: #342f29;
+      min-height: 42px;
+      overflow-wrap: anywhere;
+    }
+
+    .warning {
+      margin-top: 18px;
+      padding: 16px;
+      background: #f1d9cf;
+      color: #5a1d17;
+      font-size: 14px;
+      line-height: 1.4;
+      font-family: var(--sans);
+    }
+
+    .scale {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .chart {
+      min-height: 310px;
+      position: relative;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.72);
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .chart svg {
+      width: 100%;
+      height: 230px;
+      display: block;
+      overflow: visible;
+    }
+
+    .chart text {
+      font-family: var(--mono);
+      font-size: 12px;
+      fill: var(--muted);
+    }
+
+    .chart .big {
+      font-size: 15px;
+      fill: var(--ink);
+      font-weight: 700;
+    }
+
+    .equation {
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: #fff7e8;
+      padding: 26px;
+    }
+
+    .equation h3 {
+      font-family: var(--serif);
+      font-size: clamp(30px, 3.2vw, 46px);
+      line-height: 1.02;
+    }
+
+    .equation p {
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.55;
+      color: #ddd1bd;
+    }
+
+    .ending {
+      padding-bottom: 80px;
+    }
+
+    .ending .black-panel p {
+      max-width: 980px;
+    }
+
+    @media (max-width: 900px) {
+      .topbar .wrap {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px 0;
+        gap: 12px;
+      }
+
+      .nav {
+        width: 100%;
+        padding-bottom: 2px;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      h1 {
+        font-size: clamp(44px, 14vw, 72px);
+        line-height: 0.95;
+      }
+
+      .growth-strip,
+      .route-grid,
+      .section-head,
+      .plain-grid,
+      .before-grid,
+      .callout-row,
+      .deflection,
+      .scale {
+        grid-template-columns: 1fr;
+      }
+
+      .growth-cell,
+      .route-step {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .route-step {
+        border-bottom-color: rgba(255, 247, 232, 0.18);
+      }
+
+      .growth-cell:last-child,
+      .route-step:last-child {
+        border-bottom: 0;
+      }
+
+      .section-head {
+        gap: 18px;
+      }
+
+      .step-card {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .time {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .step-copy {
+        padding: 18px;
+      }
+
+      .frame {
+        margin: 0 18px 18px;
+      }
+
+      .mechanic {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .wrap {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .brand {
+        white-space: normal;
+      }
+
+      .nav {
+        gap: 14px;
+      }
+
+      h1 {
+        font-size: clamp(39px, 13vw, 58px);
+      }
+
+      .dek {
+        font-size: 23px;
+      }
+
+      .hero,
+      section {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .black-panel,
+      .paper-panel,
+      .callout-box,
+      .equation,
+      .chart {
+        padding: 20px;
+      }
+
+      .screen-body {
+        padding: 18px;
+      }
+
+      .mini-line {
+        display: grid;
+        gap: 5px;
+      }
+
+      .frame .quote {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">ledisa growth flow demo</a>
+      <nav class="nav" aria-label="page sections">
+        <a href="#path">path</a>
+        <a href="#before">before payment</a>
+        <a href="#upsells">upsells</a>
+        <a href="#deflection">deflection</a>
+        <a href="#scale">scale</a>
+      </nav>
+    </div>
+  </div>
+
+  <header id="top" class="hero">
+    <div class="wrap">
+      <div class="eyebrow">brandsearch + loom notes + frame review</div>
+      <h1>868k to 11.4m. checkout funded the ads.</h1>
+      <p class="dek">
+        december shows the first jump. march shows the breakout. the listicle warms the buyer, the pdp sells continuity, checkout captures the card, and the next pages keep increasing the order.
+      </p>
+
+      <div class="growth-strip" aria-label="traffic growth data">
+        <div class="growth-cell">
+          <span class="label">december traffic</span>
+          <span class="num">868.5k</span>
+          <div class="note">first visible jump in brandsearch.</div>
+        </div>
+        <div class="growth-cell">
+          <span class="label">january traffic</span>
+          <span class="num">4.1m</span>
+          <div class="note">traffic clears the first ceiling.</div>
+        </div>
+        <div class="growth-cell">
+          <span class="label">march traffic</span>
+          <span class="num">11.4m</span>
+          <div class="note">hockey-stick paid traffic scale.</div>
+        </div>
+        <div class="growth-cell">
+          <span class="label">visible ad system</span>
+          <span class="num">227 active</span>
+          <div class="note">brandsearch showed 498 total facebook ads and 227 active ads in the captured view.</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="path">
+      <div class="wrap">
+        <div class="route" aria-label="flow route">
+          <div class="route-grid">
+            <div class="route-step"><b>step 1</b><span>listicle pre-sells the glp-1 patch idea.</span></div>
+            <div class="route-step"><b>step 2</b><span>pdp turns the idea into a subscription order.</span></div>
+            <div class="route-step"><b>step 3</b><span>checkout captures the payment method.</span></div>
+            <div class="route-step"><b>step 4</b><span>upsells make the result feel incomplete.</span></div>
+            <div class="route-step"><b>step 5</b><span>review ask captures warm sentiment.</span></div>
+            <div class="route-step"><b>step 6</b><span>support form catches dispute intent.</span></div>
+          </div>
+        </div>
+
+        <div class="plain-grid">
+          <div class="black-panel">
+            <span class="label">plain thesis</span>
+            <p>they can keep buying traffic because the order keeps getting bigger after the first payment.</p>
+          </div>
+          <div class="paper-panel">
+            <div class="mechanics">
+              <div class="mechanic">
+                <b>cash today</b>
+                <span>glp-1 patch order, unpuff, extra glp-1 patches, dopamine, nad+, priority, relax, focus.</span>
+              </div>
+              <div class="mechanic">
+                <b>rebill later</b>
+                <span>the first order is subscription-led, so the ad click can create future monthly value.</span>
+              </div>
+              <div class="mechanic">
+                <b>proof loop</b>
+                <span>the review ask appears while the buyer still feels good about joining the brand.</span>
+              </div>
+              <div class="mechanic">
+                <b>dispute loop</b>
+                <span>the complaint path pushes the buyer into the merchant form before the bank path.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="before">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="tag">before payment</div>
+          <div>
+            <h2>the sale starts before the product page.</h2>
+            <p class="lead">the first three screens turn a cold facebook visitor into someone who accepts a subscription checkout.</p>
+          </div>
+        </div>
+
+        <div class="before-grid">
+          <article class="screen">
+            <div class="screen-top"><span>listicle</span><span>cold click</span></div>
+            <div class="screen-body">
+              <span class="pill">job: make the patch feel discovered</span>
+              <h3>the buyer reaches the product with context.</h3>
+              <p>the listicle gives the click a story first. by the time the buyer reaches the pdp, the patch is already connected to weight-loss support, convenience, and a simple daily ritual.</p>
+              <div class="mini-ui">
+                <div class="mini-line"><span>angle</span><strong>glp-1 support without a pill routine</strong></div>
+                <div class="mini-line"><span>effect</span><strong>less explanation needed on pdp</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="screen">
+            <div class="screen-top"><span>product page</span><span>subscription setup</span></div>
+            <div class="screen-body">
+              <span class="pill">job: make continuity normal</span>
+              <h3>the pdp sells the first recurring order.</h3>
+              <p>the product page has one main job: make the buyer believe this is a monthly transformation. once continuity feels normal, the first order is already worth more to the ad account.</p>
+              <div class="mini-ui">
+                <div class="mini-line"><span>default</span><strong>subscription-led checkout</strong></div>
+                <div class="mini-line"><span>reason</span><strong>weight loss needs consistency</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="screen">
+            <div class="screen-top"><span>checkout</span><span>card captured</span></div>
+            <div class="screen-body">
+              <span class="pill">job: unlock one-click mode</span>
+              <h3>after payment, every yes is easier.</h3>
+              <p>the buyer has already entered card details and already agreed to buy. the next screens only need one more click.</p>
+              <div class="mini-ui">
+                <div class="mini-line"><span>state</span><strong>payment permission exists</strong></div>
+                <div class="mini-line"><span>next move</span><strong>complete the result</strong></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="upsells">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="tag">upsell ladder</div>
+          <div>
+            <h2>every page creates the next reason to add something.</h2>
+            <p class="lead">the ladder works because each screen answers the buyer's next fear: visible results, enough supply, energy, youth, speed, calm, focus.</p>
+          </div>
+        </div>
+
+        <div class="ladder">
+          <article class="step-card">
+            <div class="time">0:00</div>
+            <div class="step-copy">
+              <h3>subscription order completed.</h3>
+              <p>the post-purchase flow begins after the buyer has purchased on the subscription path. this is the moment where the brand has payment permission and peak intent.</p>
+            </div>
+            <div class="frame">
+              <span class="small">screen logic</span>
+              <div class="quote">"after purchasing from the store on the 100% subscription..."</div>
+              <div class="move">move: saved card, subscription value, low-friction follow-up offers.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">0:11</div>
+            <div class="step-copy">
+              <h3>unpuff patch protects the visible result.</h3>
+              <p>the offer says weight can come off while bloating hides the change. that makes unpuff feel like the missing piece between losing weight and seeing it in the mirror.</p>
+            </div>
+            <div class="frame red">
+              <span class="small">exact frame</span>
+              <div class="quote">"7 out of 10 people who skip this step experience weaker full-result outcomes."</div>
+              <div class="move">move: the buyer just paid for results, so visible-result anxiety is fresh.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">0:50</div>
+            <div class="step-copy">
+              <h3>the 93% line is copy pressure.</h3>
+              <p>the page shows social proof language and women wearing patches. the number should be treated as persuasive page copy unless measured attach-rate data proves it.</p>
+            </div>
+            <div class="frame">
+              <span class="small">page cue</span>
+              <div class="quote">"93% add this to their order."</div>
+              <div class="move">move: make adding unpuff feel normal, popular, and expected.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">1:20</div>
+            <div class="step-copy">
+              <h3>two-month supply lowers the pain of the cart total.</h3>
+              <p>the page anchors the add-on as a per-pack decision. "most popular" gives the buyer a default path.</p>
+            </div>
+            <div class="frame amber">
+              <span class="small">pricing frame</span>
+              <div class="quote">two-month supply, most popular, anchored around "$22 per pack."</div>
+              <div class="move">move: more quantity without making the buyer think in total-order math.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">2:13</div>
+            <div class="step-copy">
+              <h3>extra glp-1 patches are framed as a prize.</h3>
+              <p>after the buyer accepts one offer, the next page tells them they won free patches. the feeling changes from "another upsell" to "claim the reward."</p>
+            </div>
+            <div class="frame">
+              <span class="small">reward frame</span>
+              <div class="quote">"you've just won four free glp-1 patches."</div>
+              <div class="move">move: sell more core inventory while the buyer feels lucky.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">2:40</div>
+            <div class="step-copy">
+              <h3>the decline button makes skipping feel costly.</h3>
+              <p>the skip button asks the buyer to confirm they understand the offer expires. this turns a simple no into a decision to lose the current chance.</p>
+            </div>
+            <div class="frame red">
+              <span class="small">decline copy</span>
+              <div class="quote">"no thanks, i understand this opportunity will not be available again."</div>
+              <div class="move">move: catch buyers who hesitate because the skip click now feels heavier.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">3:07</div>
+            <div class="step-copy">
+              <h3>dopamine patch sells the next side effect story.</h3>
+              <p>the flow says appetite change can lower food reward signals. now the buyer is buying energy, motivation, and emotional steadiness during weight loss.</p>
+            </div>
+            <div class="frame blue">
+              <span class="small">mechanism frame</span>
+              <div class="quote">weight loss can come with lower energy and motivation.</div>
+              <div class="move">move: expand from body outcome into daily mood and behavior.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">3:50</div>
+            <div class="step-copy">
+              <h3>high-contrast visuals make the mechanism easy.</h3>
+              <p>the screen uses bold contrast, diagrams, and simple before-after logic. abstract neurotransmitter copy becomes a mobile-readable picture.</p>
+            </div>
+            <div class="frame">
+              <span class="small">visual move</span>
+              <div class="quote">simple diagrams turn "dopamine" into something the buyer can follow quickly.</div>
+              <div class="move">move: raise belief without asking the buyer to read a science lecture.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">4:29</div>
+            <div class="step-copy">
+              <h3>nad+ patch turns weight loss into youth protection.</h3>
+              <p>the next offer moves from body size to appearance. the buyer is told they are taking control of weight and can also protect how young they look.</p>
+            </div>
+            <div class="frame amber">
+              <span class="small">identity frame</span>
+              <div class="quote">"you're taking control of your weight. now take back your youth too."</div>
+              <div class="move">move: attach anti-aging desire to the original glp-1 purchase.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">5:30</div>
+            <div class="step-copy">
+              <h3>the age cue qualifies more buyers.</h3>
+              <p>the copy says by 40 the body has lost a meaningful amount of natural nad stores. that lets older buyers self-identify without a long quiz.</p>
+            </div>
+            <div class="frame">
+              <span class="small">buyer cue</span>
+              <div class="quote">"by the time you're 40..."</div>
+              <div class="move">move: make the nad+ offer feel personally relevant fast.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">6:20</div>
+            <div class="step-copy">
+              <h3>priority handling switches to a simple operational add-on.</h3>
+              <p>after several mechanism-heavy offers, priority handling is easy to understand. faster handling can collect margin from buyers who are tired of reading.</p>
+            </div>
+            <div class="frame blue">
+              <span class="small">simple add-on</span>
+              <div class="quote">priority handling / faster order movement.</div>
+              <div class="move">move: low-cognitive-load margin after the hard-sell screens.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">6:36</div>
+            <div class="step-copy">
+              <h3>secret flash sale recovers skipped value.</h3>
+              <p>after a decline, the funnel opens another price-based chance. this catches the buyer who resisted the previous framing but still responds to a deal.</p>
+            </div>
+            <div class="frame red">
+              <span class="small">recovery move</span>
+              <div class="quote">"secret flash sale."</div>
+              <div class="move">move: get one more shot at cash while the card is still warm.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">7:00</div>
+            <div class="step-copy">
+              <h3>relax and focus patches monetize the exit.</h3>
+              <p>these offers are looser than unpuff, dopamine, and nad+. their job is to catch remaining demand from buyers who are still clicking through the flow.</p>
+            </div>
+            <div class="frame">
+              <span class="small">exit inventory</span>
+              <div class="quote">relax patch, then focus patch.</div>
+              <div class="move">move: squeeze final order value from buyers who skipped stronger offers.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">7:35</div>
+            <div class="step-copy">
+              <h3>founder-style message lowers regret.</h3>
+              <p>after the selling chain, the tone becomes warm and personal. "nicole from the ledisa family" makes the buyer feel welcomed by a person.</p>
+            </div>
+            <div class="frame amber">
+              <span class="small">tone reset</span>
+              <div class="quote">"wellness should be easy, consistent and work with your body."</div>
+              <div class="move">move: calm the buyer after a long sequence of purchase prompts.</div>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="time">8:10</div>
+            <div class="step-copy">
+              <h3>review ask comes while sentiment is still warm.</h3>
+              <p>the review is requested before product results exist. the review captures purchase experience, trust, welcome, and relief from completing the order.</p>
+            </div>
+            <div class="frame">
+              <span class="small">proof loop</span>
+              <div class="quote">review request after the personal message.</div>
+              <div class="move">move: more public proof for the next pdp visitor and ad click.</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="deflection">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="tag">after purchase</div>
+          <div>
+            <h2>the smartest rough part is the chargeback deflection.</h2>
+            <p class="lead">this looks vibecoded because it probably is. the clever part is the psychology: the buyer feels like they submitted the dispute inside the brand's system.</p>
+          </div>
+        </div>
+
+        <div class="deflection">
+          <div class="callout-box">
+            <h3>what happens</h3>
+            <ul>
+              <li>the email/order path includes a dispute or chargeback route controlled by the merchant.</li>
+              <li>the form asks for order details, contact details, amount, and reason.</li>
+              <li>the page tells the buyer bank disputes can take up to 90 days.</li>
+              <li>the buyer is asked to use the merchant path before going to the bank.</li>
+              <li>the brain gets the "i already submitted it" feeling, so some buyers stop searching for the bank-dispute path.</li>
+            </ul>
+          </div>
+
+          <div class="fake-form" aria-label="reconstructed dispute form">
+            <span class="label">reconstructed screen logic</span>
+            <label>order number</label>
+            <div class="input">#ledisa-order</div>
+            <label>reason</label>
+            <div class="input">refund / duplicate / unknown charge</div>
+            <label>merchant message</label>
+            <div class="input">submit here first. bank disputes can take up to 90 days.</div>
+            <div class="warning">practical job: delay the bank dispute, route anger into support, collect structured info, protect processor health.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="scale">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="tag">why the chart moves</div>
+          <div>
+            <h2>the traffic curve follows the order-value curve.</h2>
+            <p class="lead">once facebook finds buyers, the brand can keep raising spend because one buyer has several chances to produce revenue, reviews, rebills, and saved disputes.</p>
+          </div>
+        </div>
+
+        <div class="scale">
+          <div class="chart" aria-label="traffic chart">
+            <span class="label">brandsearch traffic snapshot</span>
+            <svg viewBox="0 0 620 230" role="img" aria-label="december 868.5k, january 4.1m, february 4.4m, march 11.4m">
+              <line x1="36" y1="196" x2="584" y2="196" stroke="#d9d0c0" stroke-width="1"></line>
+              <line x1="36" y1="148" x2="584" y2="148" stroke="#d9d0c0" stroke-width="1"></line>
+              <line x1="36" y1="100" x2="584" y2="100" stroke="#d9d0c0" stroke-width="1"></line>
+              <line x1="36" y1="52" x2="584" y2="52" stroke="#d9d0c0" stroke-width="1"></line>
+              <polyline points="55,190 160,179 270,113 380,108 520,34" fill="none" stroke="#a93425" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              <circle cx="55" cy="190" r="6" fill="#a93425"></circle>
+              <circle cx="160" cy="179" r="6" fill="#a93425"></circle>
+              <circle cx="270" cy="113" r="6" fill="#a93425"></circle>
+              <circle cx="380" cy="108" r="6" fill="#a93425"></circle>
+              <circle cx="520" cy="34" r="7" fill="#a93425"></circle>
+              <text x="42" y="218">nov</text>
+              <text x="140" y="218">dec</text>
+              <text x="252" y="218">jan</text>
+              <text x="363" y="218">feb</text>
+              <text x="504" y="218">mar</text>
+              <text class="big" x="132" y="166">868.5k</text>
+              <text class="big" x="246" y="101">4.1m</text>
+              <text class="big" x="360" y="96">4.4m</text>
+              <text class="big" x="490" y="24">11.4m</text>
+            </svg>
+            <div class="note">the page needs a buyer economics explanation.</div>
+          </div>
+
+          <div class="equation">
+            <h3>the ad click becomes affordable when checkout keeps adding value.</h3>
+            <p>
+              listicle attention + subscription checkout + one-click upsells + warm review ask + chargeback deflection = more allowable cac.
+            </p>
+            <p>
+              each part is small by itself. together they make the same facebook click worth more than a plain checkout.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ending">
+      <div class="wrap">
+        <div class="black-panel">
+          <span class="label">short demo direction</span>
+          <p>this is the page direction: one direct growth claim, one exact route, then every screen explained by the job it performs in the funnel.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
