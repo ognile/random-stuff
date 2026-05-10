@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nuora l90d funnel leverage report</title>
+<style>
+  :root {
+    --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413; --clay:#D97757; --clay-d:#B85C3E;
+    --oat:#E3DACC; --olive:#788C5D; --blue:#517B82; --rust:#B04A3F;
+    --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--g300);
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--ivory); color:var(--slate); font-family:var(--sans); line-height:1.55; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1180px; margin:0 auto; padding:0 32px 120px; }
+  .masthead { padding:76px 0 34px; border-bottom:var(--border); }
+  .hero-grid { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:52px; align-items:end; }
+  .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:0; text-transform:uppercase; color:var(--g500); display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+  .eyebrow:before { content:""; width:24px; height:1.5px; background:var(--clay); display:block; }
+  h1 { font-family:var(--serif); font-weight:500; font-size:clamp(42px, 6.2vw, 76px); line-height:1.02; letter-spacing:0; margin:0; max-width:16ch; }
+  h1 em { color:var(--clay-d); font-style:italic; }
+  .intro { max-width:680px; color:var(--g700); font-size:17px; margin:24px 0 0; }
+  .hero-fig { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:end; }
+  .pane { background:var(--paper); border:var(--border); border-radius:14px; padding:16px; min-height:250px; position:relative; box-shadow:0 18px 45px rgba(20,20,19,.08); }
+  .pane:first-child { transform:rotate(-2deg) translateY(8px); background:var(--g100); box-shadow:none; }
+  .pane:nth-child(2) { transform:rotate(1.3deg); border-color:var(--slate); }
+  .tag { position:absolute; top:-11px; left:14px; font-family:var(--mono); font-size:10px; background:var(--ivory); border:var(--border); border-radius:999px; padding:3px 8px; color:var(--g500); }
+  .pane:nth-child(2) .tag { color:var(--slate); border-color:var(--slate); }
+  .fake-line { height:7px; background:var(--g300); border-radius:99px; margin:9px 0; }
+  .fake-line.w70 { width:70%; } .fake-line.w50 { width:50%; } .fake-line.w90 { width:90%; }
+  .mini-bars { display:flex; align-items:end; gap:8px; height:118px; margin-top:20px; }
+  .mini-bars i { flex:1; border-radius:6px 6px 0 0; background:var(--clay); }
+  nav.toc { display:flex; flex-wrap:wrap; gap:8px; padding:24px 0 0; }
+  nav.toc a { text-decoration:none; color:var(--g700); background:var(--paper); border:var(--border); border-radius:999px; padding:7px 13px; font-size:12.5px; }
+  nav.toc a:hover { border-color:var(--slate); color:var(--slate); }
+  section { margin-top:74px; scroll-margin-top:28px; }
+  .sec-head { display:flex; align-items:baseline; gap:16px; margin-bottom:14px; }
+  .sec-head .idx { width:34px; flex:none; color:var(--clay); font-family:var(--mono); font-size:13px; font-weight:700; }
+  h2 { font-family:var(--serif); font-size:30px; font-weight:500; letter-spacing:0; margin:0; }
+  .sec-intro { max-width:740px; color:var(--g700); margin:0 0 24px 50px; }
+  .summary-band { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; }
+  .stat { background:var(--paper); border:var(--border); border-radius:12px; padding:18px 18px 16px; min-height:118px; }
+  .stat-num { font-family:var(--serif); font-size:38px; line-height:1; margin-bottom:9px; letter-spacing:0; }
+  .stat-label { font-size:11px; letter-spacing:0; text-transform:uppercase; color:var(--g500); }
+  .stat-note { font-family:var(--mono); font-size:11px; color:var(--g700); margin-top:6px; }
+  .grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:18px; margin-left:50px; }
+  .panel { background:var(--paper); border:var(--border); border-radius:14px; padding:22px; min-width:0; overflow:hidden; }
+  .span4 { grid-column:span 4; } .span5 { grid-column:span 5; } .span6 { grid-column:span 6; } .span7 { grid-column:span 7; } .span12 { grid-column:1/-1; }
+  .tldr { background:var(--slate); color:var(--ivory); border-radius:16px; padding:26px 30px; }
+  .tldr .label { font-family:var(--mono); color:var(--oat); letter-spacing:0; text-transform:uppercase; font-size:11px; margin-bottom:10px; }
+  .tldr p { margin:0; font-size:16px; }
+  .callout { border-left:5px solid var(--clay); padding-left:18px; }
+  .muted { color:var(--g500); }
+  .stack { display:flex; height:38px; background:var(--g100); border:var(--border); border-radius:10px; overflow:hidden; }
+  .stack i { display:block; height:100%; }
+  .legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; color:var(--g700); font-size:13px; }
+  .legend i, .dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:7px; vertical-align:middle; }
+  .week-row { display:grid; grid-template-columns:92px 1fr 230px; gap:12px; align-items:center; margin:8px 0; }
+  .week-row time { font-family:var(--mono); font-size:12px; color:var(--g700); }
+  .week-bar { position:relative; height:28px; border:var(--border); border-radius:8px; overflow:hidden; background:var(--g100); }
+  .week-bar i { display:block; height:100%; background:var(--clay); }
+  .week-bar span { position:absolute; inset:0; display:flex; align-items:center; padding-left:9px; font-family:var(--mono); font-size:11px; }
+  .week-row small { color:var(--g700); }
+  .mini-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .mini-card { background:var(--paper); border:var(--border); border-radius:12px; padding:16px; }
+  .mini-top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+  .mini-top b { font-family:var(--serif); font-size:20px; font-weight:500; overflow-wrap:anywhere; }
+  .mini-top span { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--clay-d); }
+  .mini-card p { color:var(--g700); margin:8px 0; overflow-wrap:anywhere; }
+  .trio { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:10px 0; }
+  .trio span { background:var(--g100); border-radius:7px; padding:6px; font-family:var(--mono); font-size:11px; text-align:center; }
+  .route-list { display:grid; grid-template-columns:1fr; gap:10px; }
+  .route-card { display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:18px; align-items:start; border:1px solid var(--g200); border-radius:10px; padding:14px; background:var(--paper); }
+  .route-card h3 { margin:2px 0 4px; font-family:var(--serif); font-size:22px; font-weight:500; overflow-wrap:anywhere; }
+  .route-card p { margin:0; color:var(--g700); overflow-wrap:anywhere; }
+  .route-card span { font-family:var(--mono); font-size:10px; color:var(--clay-d); text-transform:uppercase; }
+  .route-card small { grid-column:1/-1; color:var(--g700); }
+  .route-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .route-metrics b { background:var(--g100); border-radius:7px; padding:8px 6px; text-align:center; font-family:var(--mono); font-size:11px; font-weight:600; white-space:nowrap; }
+  .offer-cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-left:50px; margin-bottom:18px; }
+  .offer-card { background:var(--paper); border:var(--border); border-radius:12px; padding:18px; min-width:0; }
+  .offer-card b { display:block; font-family:var(--serif); font-size:30px; font-weight:500; line-height:1; margin-bottom:8px; }
+  .offer-card span { display:block; color:var(--g700); font-size:13px; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 14px 50px; }
+  input, button { border:var(--border); border-radius:999px; background:var(--paper); padding:8px 13px; font:inherit; }
+  input { min-width:340px; }
+  button { cursor:pointer; }
+  button.active { background:var(--slate); color:var(--ivory); border-color:var(--slate); }
+  .table-box { width:100%; max-width:100%; overflow:auto; border:1px solid var(--g200); border-radius:10px; background:var(--paper); }
+  .panel .table-box { margin-top:14px; }
+  .table-wrap { overflow:auto; max-height:640px; border:var(--border); border-radius:14px; background:var(--paper); margin-left:50px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  .table-box table { min-width:640px; }
+  .span6 .table-box table { min-width:760px; }
+  .wide-table { min-width:1760px; width:max-content; }
+  .landing-table { min-width:2200px; width:max-content; }
+  .landing-table th, .landing-table td, .wide-table th, .wide-table td { white-space:nowrap; vertical-align:middle; }
+  .landing-table td:first-child a { display:inline-block; max-width:420px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:bottom; }
+  .landing-table td:last-child { color:var(--g700); max-width:none; }
+  th, td { padding:10px 11px; border-bottom:1px solid var(--g200); text-align:left; vertical-align:top; }
+  th { position:sticky; top:0; background:var(--g100); z-index:1; font-size:11px; letter-spacing:0; text-transform:uppercase; color:var(--g500); cursor:pointer; }
+  td:nth-child(n+5), th:nth-child(n+5) { text-align:right; }
+  td:first-child, th:first-child { text-align:left; }
+  td a { color:var(--slate); text-decoration-color:var(--oat); text-underline-offset:3px; overflow-wrap:anywhere; }
+  .mono { font-family:var(--mono); }
+  .source-note { margin-left:50px; color:var(--g500); font-size:12px; }
+  @media (max-width: 980px) {
+    .page { padding:0 18px 80px; }
+    .hero-grid, .summary-band, .grid, .mini-grid, .offer-cards { display:block; margin-left:0; }
+    .hero-fig { margin-top:30px; max-width:420px; }
+    .panel, .stat, .mini-card, .offer-card { margin-bottom:14px; }
+    .sec-intro, .table-wrap, .controls, .source-note { margin-left:0; }
+    .route-card { display:block; }
+    .route-metrics { margin:10px 0; }
+    .week-row { grid-template-columns:82px 1fr; }
+    .week-row small { display:none; }
+    input { min-width:0; width:100%; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="masthead">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">last 90 days / spend concentration / funnel leverage</div>
+        <h1>nuora funnel diversity is mostly <em>not diversity.</em></h1>
+        <p class="intro">last 90 days for <b>nick-usd-est-3</b>, 2026-02-10 through 2026-05-09. spend is grouped by the actual destination recovered from creative data or facebook post comments, so the report can show where to scale, where spend is overconcentrated, and where page/offer testing is thin.</p>
+        <nav class="toc">
+          <a href="#verdict">verdict</a><a href="#composition">composition</a><a href="#leverage">leverage</a><a href="#offer">offer/pricing</a><a href="#matrices">matrices</a><a href="#atlas">page atlas</a><a href="#audit">data audit</a>
+        </nav>
+      </div>
+      <div class="hero-fig" aria-hidden="true">
+        <div class="pane"><span class="tag">current mix</span><div class="fake-line w90"></div><div class="fake-line w70"></div><div class="fake-line w90"></div><div class="fake-line w50"></div><div class="fake-line w70"></div></div>
+        <div class="pane"><span class="tag">leverage map</span><div class="mini-bars"><i style="height:96%;background:var(--slate)"></i><i style="height:3%;background:var(--clay)"></i><i style="height:1%;background:var(--blue)"></i><i style="height:.5%;background:var(--rust)"></i></div><div class="fake-line w90"></div><div class="fake-line w70"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <section id="verdict">
+    <div class="summary-band">
+      <div class="stat"><div class="stat-num">$7.24m</div><div class="stat-label">spend</div><div class="stat-note">$19.14 under live guardrail</div></div>
+      <div class="stat"><div class="stat-num">1.16x</div><div class="stat-label">roas</div><div class="stat-note">$50.81 cpp</div></div>
+      <div class="stat"><div class="stat-num">142,399</div><div class="stat-label">purchases</div><div class="stat-note">$20.06 cpatc</div></div>
+      <div class="stat"><div class="stat-num">$6.97m</div><div class="stat-label">pdp spend</div><div class="stat-note">96.4% of $1k+ pages</div></div>
+      <div class="stat"><div class="stat-num">$54.2k</div><div class="stat-label">native spend</div><div class="stat-note">1.40x roas</div></div>
+      <div class="stat"><div class="stat-num">$7.4k</div><div class="stat-label">quiz spend</div><div class="stat-note">2 quiz funnels</div></div>
+    </div>
+    <div class="grid" style="margin-top:22px">
+      <article class="tldr span7"><div class="label">tl;dr</div><p>the account spent $7.24m in l90d, but the funnel system is structurally narrow. 92.8% of all spend sits in four destination groups, and 96.4% of spend on $1k+ landing pages is PDP. native articles, listicles, and quizzes exist, but they are barely funded.</p></article>
+      <article class="panel span5 callout"><h3>taxonomy that matters</h3><p>page-based product detail pages count as PDP even when they live under `/pages`. quiz funnels stay separate. native articles and listicles stay separate. this is why the report shows a traffic-route portfolio that exists, but a funded funnel portfolio that is still heavily PDP.</p></article>
+    </div>
+  </section>
+
+  <section id="composition">
+    <div class="sec-head"><span class="idx">01</span><h2>funnel composition</h2></div>
+    <p class="sec-intro">this is the core diversity picture. the bars are not ad names. they are cumulative spend by resolved landing page type after url recovery.</p>
+    <div class="grid">
+      <article class="panel span12">
+        <div class="stack"><i style="width:96.436%;background:#141413" title="pdp $6.97m"></i><i style="width:2.467%;background:#788C5D" title="homepage $178.4k"></i><i style="width:0.750%;background:#D97757" title="native article $54.2k"></i><i style="width:0.400%;background:#B04A3F" title="list article $13.8k"></i><i style="width:0.400%;background:#517B82" title="quiz $7.4k"></i><i style="width:0.400%;background:#87867F" title="dead/404 $2.2k"></i><i style="width:0.400%;background:#A9A59B" title="unresolved $1.6k"></i></div><div class="legend"><span><i style="background:#141413"></i>pdp <b>96.4%</b></span><span><i style="background:#788C5D"></i>homepage <b>2.5%</b></span><span><i style="background:#D97757"></i>native article <b>0.8%</b></span><span><i style="background:#B04A3F"></i>list article <b>0.2%</b></span><span><i style="background:#517B82"></i>quiz <b>0.1%</b></span><span><i style="background:#87867F"></i>dead/404 <b>0.0%</b></span><span><i style="background:#A9A59B"></i>unresolved <b>0.0%</b></span></div>
+      </article>
+      <article class="panel span6"><h3>weekly spend by product</h3><div class="week-row"><time>2026-02-09</time><div class="week-bar"><i style="width:63.16%"></i><span>$453.2k</span></div><small>capsule $72.3k / gummies $380.9k</small></div><div class="week-row"><time>2026-02-16</time><div class="week-bar"><i style="width:69.57%"></i><span>$499.2k</span></div><small>capsule $85.4k / gummies $413.8k</small></div><div class="week-row"><time>2026-02-23</time><div class="week-bar"><i style="width:82.71%"></i><span>$593.5k</span></div><small>capsule $145.6k / gummies $447.9k</small></div><div class="week-row"><time>2026-03-02</time><div class="week-bar"><i style="width:86.37%"></i><span>$619.7k</span></div><small>capsule $187.3k / gummies $432.4k</small></div><div class="week-row"><time>2026-03-09</time><div class="week-bar"><i style="width:96.44%"></i><span>$692.0k</span></div><small>capsule $242.9k / gummies $449.1k</small></div><div class="week-row"><time>2026-03-16</time><div class="week-bar"><i style="width:100.00%"></i><span>$717.5k</span></div><small>capsule $290.4k / gummies $427.1k</small></div><div class="week-row"><time>2026-03-23</time><div class="week-bar"><i style="width:89.26%"></i><span>$640.5k</span></div><small>capsule $315.2k / gummies $325.3k</small></div><div class="week-row"><time>2026-03-30</time><div class="week-bar"><i style="width:87.16%"></i><span>$625.4k</span></div><small>capsule $236.3k / gummies $389.1k</small></div><div class="week-row"><time>2026-04-06</time><div class="week-bar"><i style="width:81.53%"></i><span>$585.0k</span></div><small>capsule $216.4k / gummies $368.7k</small></div><div class="week-row"><time>2026-04-13</time><div class="week-bar"><i style="width:78.82%"></i><span>$565.5k</span></div><small>capsule $236.1k / gummies $329.5k</small></div><div class="week-row"><time>2026-04-20</time><div class="week-bar"><i style="width:67.00%"></i><span>$480.8k</span></div><small>capsule $189.0k / gummies $291.7k</small></div><div class="week-row"><time>2026-04-27</time><div class="week-bar"><i style="width:61.91%"></i><span>$444.2k</span></div><small>capsule $168.0k / gummies $276.2k</small></div><div class="week-row"><time>2026-05-04</time><div class="week-bar"><i style="width:44.42%"></i><span>$318.7k</span></div><small>capsule $138.0k / gummies $180.7k</small></div></article>
+      <article class="panel span6"><h3>page type matrix</h3><div class="table-box"><table class="sortable "><thead><tr><th>page type</th><th>spend</th><th>share</th><th>roas</th><th>cpp</th><th>pages</th></tr></thead><tbody><tr><td><span class="dot" style="background:#141413"></span>pdp</td><td data-sort="6970962.0">$6.97m</td><td data-sort="96.4">96.4%</td><td data-sort="1.1607">1.16x</td><td data-sort="50.89">$50.89</td><td data-sort="11">11</td></tr><tr><td><span class="dot" style="background:#788C5D"></span>homepage</td><td data-sort="178364.32">$178.4k</td><td data-sort="2.5">2.5%</td><td data-sort="1.069">1.07x</td><td data-sort="50.95">$50.95</td><td data-sort="1">1</td></tr><tr><td><span class="dot" style="background:#D97757"></span>native article</td><td data-sort="54221.92">$54.2k</td><td data-sort="0.8">0.8%</td><td data-sort="1.3952">1.40x</td><td data-sort="42.66">$42.66</td><td data-sort="9">9</td></tr><tr><td><span class="dot" style="background:#B04A3F"></span>list article</td><td data-sort="13838.98">$13.8k</td><td data-sort="0.2">0.2%</td><td data-sort="1.1742">1.17x</td><td data-sort="48.56">$48.56</td><td data-sort="1">1</td></tr><tr><td><span class="dot" style="background:#517B82"></span>quiz</td><td data-sort="7413.3">$7.4k</td><td data-sort="0.1">0.1%</td><td data-sort="1.215">1.22x</td><td data-sort="50.78">$50.78</td><td data-sort="2">2</td></tr><tr><td><span class="dot" style="background:#87867F"></span>dead/404</td><td data-sort="2200.23">$2.2k</td><td data-sort="0.0">0.0%</td><td data-sort="1.4919">1.49x</td><td data-sort="40.74">$40.74</td><td data-sort="1">1</td></tr><tr><td><span class="dot" style="background:#A9A59B"></span>unresolved</td><td data-sort="1598.26">$1.6k</td><td data-sort="0.0">0.0%</td><td data-sort="1.1373">1.14x</td><td data-sort="49.95">$49.95</td><td data-sort="1">1</td></tr></tbody></table></div></article>
+    </div>
+  </section>
+
+  <section id="leverage">
+    <div class="sec-head"><span class="idx">02</span><h2>leverage map</h2></div>
+    <p class="sec-intro">these are not commands to scale blindly. high spend naturally drags roas down on meta. this flags where the portfolio deserves controlled budget/page-production tests.</p>
+    <div class="grid">
+      <article class="panel span12"><h3>efficient but underfunded non-PDP routes</h3><div class="route-list"><article class="route-card"><div><span>native article</span><h3>what-different-vaginal-odor-means</h3><p>mynuora.com/pages/what-different-vaginal-odor-means</p></div><div class="route-metrics"><b>$9.6k</b><b>2.17x</b><b>$27.96</b></div><small>gummies owned article route · final offer: gummies 1/2/3-pack subscription ladder · long-form article/story structure; no PDP layout</small></article><article class="route-card"><div><span>native article</span><h3>pasta-garlic-bread-and-a-glass-of-red</h3><p>mynuora.com/pages/pasta-garlic-bread-and-a-glass-of-red</p></div><div class="route-metrics"><b>$4.0k</b><b>1.73x</b><b>$37.38</b></div><small>capsule owned article route · final offer: capsule 1/2/3-bottle subscription ladder · long-form first-person article/story structure; no PDP layout</small></article><article class="route-card"><div><span>native article</span><h3>are-moisture-products-scams</h3><p>mynuora.com/pages/are-moisture-products-scams</p></div><div class="route-metrics"><b>$17.0k</b><b>1.57x</b><b>$39.53</b></div><small>gummies owned article route · final offer: gummies 1/2/3-pack subscription ladder · user-confirmed correct: editorial/native article headline and long-form article structure</small></article><article class="route-card"><div><span>native article</span><h3>probiotics-might-be-a-scam</h3><p>mynuora.com/pages/probiotics-might-be-a-scam</p></div><div class="route-metrics"><b>$1.9k</b><b>1.26x</b><b>$47.48</b></div><small>gummies owned article route · final offer: gummies 1/2/3-pack subscription ladder · editorial/native article headline and long-form article structure</small></article><article class="route-card"><div><span>list article</span><h3>5-top-supplements</h3><p>news.tophealthinsider.com/articles/5-top-supplements</p></div><div class="route-metrics"><b>$13.8k</b><b>1.17x</b><b>$48.56</b></div><small>third-party advertorial route · final offer: final offer unverified · third-party/news article domain with listicle language</small></article></div></article>
+      <article class="panel span12"><h3>high-spend PDP routes to audit first</h3><div class="route-list"><article class="route-card"><div><span>pdp</span><h3>gummies</h3><p>mynuora.com/products/gummies</p></div><div class="route-metrics"><b>$1.28m</b><b>0.89x</b><b>$63.79</b></div><small>gummies pdp route · final offer: gummies 1/2/3-pack subscription ladder · shopify product-detail url with product offer/purchase surface</small></article></div></article>
+      <article class="panel span6 callout"><h3>capsule</h3><p>$2.53m spend, 1.38x roas, $49.10 cpp. capsule looks stronger, but almost all real spend is still PDP. page-production opportunity: more capsule native articles and quiz routes with real budget.</p></article>
+      <article class="panel span6 callout"><h3>gummies</h3><p>$4.71m spend, 1.04x roas, $51.78 cpp. biggest audit target remains `mynuora.com/products/gummies`: $1.28m spend at 0.89x roas.</p></article>
+    </div>
+  </section>
+
+  <section id="offer">
+    <div class="sec-head"><span class="idx">03</span><h2>offer and pricing diversity</h2></div>
+    <p class="sec-intro">offer here means the final selectable purchase choice: pack/bottle quantity, subscription/refill framing, price anchor, shipping, and guarantee. entry pages are not counted as offers. among verified final purchase surfaces, the account is basically testing two offers: gummies pack ladder and capsule bottle ladder.</p>
+    <div class="offer-cards">
+      <article class="offer-card"><b>2</b><span>verified final selectable offer systems at meaningful spend.</span></article>
+      <article class="offer-card"><b>$4.67m</b><span>gummies 1/2/3-pack subscription ladder: 1.04x roas, $51.75 cpp, $54.07 aov.</span></article>
+      <article class="offer-card"><b>$2.52m</b><span>capsule 1/2/3-bottle subscription ladder: 1.38x roas, $49.10 cpp, $67.61 aov.</span></article>
+      <article class="offer-card"><b>$37.9k</b><span>spend where the final selectable offer is not verified or destination is unavailable; not counted as diversity.</span></article>
+    </div>
+    <div class="grid">
+      <article class="panel span12"><h3>spend by final selectable offer</h3><div class="table-box"><table class="sortable wide-table"><thead><tr><th>final selectable offer</th><th>spend</th><th>share</th><th>roas</th><th>cpp</th><th>aov</th><th>cpatc</th><th>cp checkout</th><th>pages</th><th>customer selection mechanics</th></tr></thead><tbody><tr><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="4671600.8">$4.67m</td><td data-sort="64.6">64.6%</td><td data-sort="1.0447">1.04x</td><td data-sort="51.75">$51.75</td><td data-sort="54.07">$54.07</td><td data-sort="19.91">$19.91</td><td data-sort="35.09">$35.09</td><td data-sort="15">15</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td>capsule 1/2/3-bottle subscription ladder</td><td data-sort="2519112.09">$2.52m</td><td data-sort="34.8">34.8%</td><td data-sort="1.3769">1.38x</td><td data-sort="49.1">$49.10</td><td data-sort="67.61">$67.61</td><td data-sort="20.29">$20.29</td><td data-sort="40.07">$40.07</td><td data-sort="4">4</td><td>$65 bottle ladder; 1/2/3 bottle choices; subscription/refill framing</td></tr></tbody></table></div></article>
+      <article class="panel span6 callout"><h3>pricing read</h3><p>capsule has a higher detected unit anchor at $65 and produces a higher AOV ($67.61) with similar CPP ($49.10). gummies has much larger spend, lower AOV ($54.07), and weaker ROAS (1.04x), so the problem is not just page format; gummies needs stronger offer architecture or better route-to-offer matching.</p></article>
+      <article class="panel span6 callout"><h3>route spend is not offer spend</h3><p>$75.5k is on articles, listicles, and quizzes, but those are entry routes. their combined performance is 1.34x roas and $44.34 cpp. the offer question is whether the customer sees a different final selection. right now, verified final selections still collapse to the same gummies/capsule subscription ladders.</p></article>
+      <article class="panel span12 callout"><h3>missing tests</h3><p>there is almost no funded testing of materially different customer-selectable offers: no separate trial offer, no distinct one-time-vs-subscription framing test, no quiz-only checkout offer, no article-specific bridge offer, and no materially different gummies price ladder at scale. $37.9k is excluded from offer-diversity claims because the final selectable offer is not verified or unavailable.</p></article>
+    </div>
+  </section>
+
+  <section id="matrices">
+    <div class="sec-head"><span class="idx">04</span><h2>performance matrices</h2></div>
+    <p class="sec-intro">the operating metrics that matter for allocation decisions, cut by product, ad type, page class, and creative-format bucket.</p>
+    <div class="grid">
+      <article class="panel span6"><h3>product</h3><div class="table-box"><table class="sortable "><thead><tr><th>product</th><th>spend</th><th>share</th><th>roas</th><th>cpp</th><th>cpatc</th><th>cp checkout</th><th>ads</th></tr></thead><tbody><tr><td>gummies</td><td data-sort="4707823.06">$4.71m</td><td data-sort="65.1">65.1%</td><td data-sort="1.0444">1.04x</td><td data-sort="51.78">$51.78</td><td data-sort="19.95">$19.95</td><td data-sort="35.13">$35.13</td><td data-sort="1885">1,885</td></tr><tr><td>capsule</td><td data-sort="2527347.12">$2.53m</td><td data-sort="34.9">34.9%</td><td data-sort="1.3766">1.38x</td><td data-sort="49.1">$49.10</td><td data-sort="20.27">$20.27</td><td data-sort="40.04">$40.04</td><td data-sort="416">416</td></tr></tbody></table></div></article>
+      <article class="panel span6"><h3>ad type</h3><div class="table-box"><table class="sortable "><thead><tr><th>ad type</th><th>spend</th><th>share</th><th>roas</th><th>cpp</th><th>cpatc</th><th>cp checkout</th><th>ads</th></tr></thead><tbody><tr><td>video</td><td data-sort="3326411.86">$3.33m</td><td data-sort="46.0">46.0%</td><td data-sort="1.2">1.20x</td><td data-sort="48.46">$48.46</td><td data-sort="18.99">$18.99</td><td data-sort="38.51">$38.51</td><td data-sort="744">744</td></tr><tr><td>text</td><td data-sort="2360397.03">$2.36m</td><td data-sort="32.6">32.6%</td><td data-sort="1.2299">1.23x</td><td data-sort="49.98">$49.98</td><td data-sort="20.37">$20.37</td><td data-sort="33.79">$33.79</td><td data-sort="366">366</td></tr><tr><td>image</td><td data-sort="1548409.77">$1.55m</td><td data-sort="21.4">21.4%</td><td data-sort="0.9696">0.97x</td><td data-sort="58.37">$58.37</td><td data-sort="22.24">$22.24</td><td data-sort="37.84">$37.84</td><td data-sort="1193">1,193</td></tr></tbody></table></div></article>
+      <article class="panel span12"><h3>product x page class</h3><div class="table-box"><table class="sortable "><thead><tr><th>product</th><th>page class</th><th>spend</th><th>roas</th><th>cpp</th><th>cpatc</th><th>cp checkout</th><th>ads</th></tr></thead><tbody><tr><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td data-sort="4460179.38">$4.46m</td><td data-sort="1.0395">1.04x</td><td data-sort="51.93">$51.93</td><td data-sort="19.95">$19.95</td><td data-sort="35.32">$35.32</td><td data-sort="1625">1,625</td></tr><tr><td>capsule</td><td><span class="dot" style="background:#141413"></span>pdp</td><td data-sort="2510782.62">$2.51m</td><td data-sort="1.3761">1.38x</td><td data-sort="49.14">$49.14</td><td data-sort="20.32">$20.32</td><td data-sort="40.15">$40.15</td><td data-sort="378">378</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#788C5D"></span>homepage</td><td data-sort="178364.32">$178.4k</td><td data-sort="1.069">1.07x</td><td data-sort="50.95">$50.95</td><td data-sort="21.96">$21.96</td><td data-sort="31.68">$31.68</td><td data-sort="40">40</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td data-sort="50184.44">$50.2k</td><td data-sort="1.3682">1.37x</td><td data-sort="43.15">$43.15</td><td data-sort="14.68">$14.68</td><td data-sort="31.23">$31.23</td><td data-sort="134">134</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#B04A3F"></span>list article</td><td data-sort="13838.98">$13.8k</td><td data-sort="1.1742">1.17x</td><td data-sort="48.56">$48.56</td><td data-sort="19.6">$19.60</td><td data-sort="33.35">$33.35</td><td data-sort="10">10</td></tr><tr><td>capsule</td><td><span class="dot" style="background:#517B82"></span>quiz</td><td data-sort="4291.99">$4.3k</td><td data-sort="1.5318">1.53x</td><td data-sort="42.08">$42.08</td><td data-sort="12.55">$12.55</td><td data-sort="24.53">$24.53</td><td data-sort="3">3</td></tr><tr><td>capsule</td><td><span class="dot" style="background:#D97757"></span>native article</td><td data-sort="4037.48">$4.0k</td><td data-sort="1.7307">1.73x</td><td data-sort="37.38">$37.38</td><td data-sort="15.12">$15.12</td><td data-sort="26.92">$26.92</td><td data-sort="14">14</td></tr><tr><td>capsule</td><td><span class="dot" style="background:#D1CFC5"></span>sub-$1k/unclassified</td><td data-sort="3778.46">$3.8k</td><td data-sort="1.4085">1.41x</td><td data-sort="43.94">$43.94</td><td data-sort="14.1">$14.10</td><td data-sort="28.84">$28.84</td><td data-sort="14">14</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#517B82"></span>quiz</td><td data-sort="3121.31">$3.1k</td><td data-sort="0.7794">0.78x</td><td data-sort="70.94">$70.94</td><td data-sort="27.87">$27.87</td><td data-sort="52.9">$52.90</td><td data-sort="20">20</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#D1CFC5"></span>sub-$1k/unclassified</td><td data-sort="2841.19">$2.8k</td><td data-sort="0.899">0.90x</td><td data-sort="64.57">$64.57</td><td data-sort="28.99">$28.99</td><td data-sort="45.83">$45.83</td><td data-sort="50">50</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#87867F"></span>dead/404</td><td data-sort="2200.23">$2.2k</td><td data-sort="1.4919">1.49x</td><td data-sort="40.74">$40.74</td><td data-sort="13.84">$13.84</td><td data-sort="30.56">$30.56</td><td data-sort="6">6</td></tr><tr><td>gummies</td><td><span class="dot" style="background:#A9A59B"></span>unresolved</td><td data-sort="1598.26">$1.6k</td><td data-sort="1.1373">1.14x</td><td data-sort="49.95">$49.95</td><td data-sort="31.34">$31.34</td><td data-sort="34.74">$34.74</td><td data-sort="9">9</td></tr></tbody></table></div></article>
+      <article class="panel span12"><h3>creative format bucket</h3><div class="table-box"><table class="sortable "><thead><tr><th>product</th><th>format bucket</th><th>spend</th><th>roas</th><th>cpp</th><th>ads</th></tr></thead><tbody><tr><td>gummies</td><td>video - ugc/testimonial</td><td data-sort="2110374.95">$2.11m</td><td data-sort="1.1174">1.12x</td><td data-sort="47.56">$47.56</td><td data-sort="469">469</td></tr><tr><td>capsule</td><td>video - ugc/testimonial</td><td data-sort="1158919.56">$1.16m</td><td data-sort="1.34">1.34x</td><td data-sort="50.2">$50.20</td><td data-sort="272">272</td></tr><tr><td>gummies</td><td>text - discovery/education</td><td data-sort="650197.38">$650.2k</td><td data-sort="0.9792">0.98x</td><td data-sort="53.75">$53.75</td><td data-sort="137">137</td></tr><tr><td>capsule</td><td>text - comment/conversation</td><td data-sort="626686.87">$626.7k</td><td data-sort="1.531">1.53x</td><td data-sort="44.4">$44.40</td><td data-sort="21">21</td></tr><tr><td>gummies</td><td>image - product/offer</td><td data-sort="505482.11">$505.5k</td><td data-sort="1.0002">1.00x</td><td data-sort="56.83">$56.83</td><td data-sort="502">502</td></tr><tr><td>capsule</td><td>text - personal story</td><td data-sort="490267.45">$490.3k</td><td data-sort="1.2666">1.27x</td><td data-sort="53.73">$53.73</td><td data-sort="61">61</td></tr><tr><td>gummies</td><td>image - ugc/testimonial</td><td data-sort="474930.28">$474.9k</td><td data-sort="1.0176">1.02x</td><td data-sort="54.91">$54.91</td><td data-sort="286">286</td></tr><tr><td>gummies</td><td>image - advertorial</td><td data-sort="378635.04">$378.6k</td><td data-sort="0.9978">1.00x</td><td data-sort="57.63">$57.63</td><td data-sort="287">287</td></tr><tr><td>gummies</td><td>text - personal story</td><td data-sort="269425.24">$269.4k</td><td data-sort="1.0868">1.09x</td><td data-sort="48.93">$48.93</td><td data-sort="63">63</td></tr><tr><td>capsule</td><td>text - discovery/education</td><td data-sort="189899.32">$189.9k</td><td data-sort="1.3697">1.37x</td><td data-sort="48.94">$48.94</td><td data-sort="52">52</td></tr><tr><td>gummies</td><td>image - comparison</td><td data-sort="170116.56">$170.1k</td><td data-sort="0.687">0.69x</td><td data-sort="81.43">$81.43</td><td data-sort="76">76</td></tr><tr><td>gummies</td><td>text - comment/conversation</td><td data-sort="133920.77">$133.9k</td><td data-sort="0.9937">0.99x</td><td data-sort="53.5">$53.50</td><td data-sort="32">32</td></tr><tr><td>capsule</td><td>video - unclassified</td><td data-sort="57117.35">$57.1k</td><td data-sort="1.4087">1.41x</td><td data-sort="48.2">$48.20</td><td data-sort="3">3</td></tr><tr><td>gummies</td><td>image - unclassified</td><td data-sort="19245.78">$19.2k</td><td data-sort="0.9238">0.92x</td><td data-sort="59.22">$59.22</td><td data-sort="42">42</td></tr></tbody></table></div></article>
+    </div>
+  </section>
+
+  <section id="atlas">
+    <div class="sec-head"><span class="idx">05</span><h2>landing page atlas</h2></div>
+    <p class="sec-intro">all landing-page groups over $1,000 spend. use filters to inspect capsule/gummies, page classes, dead destinations, and cta flows.</p>
+    <div class="controls">
+      <input id="pageSearch" placeholder="filter url, product, class, route, offer">
+      <button class="active" data-filter="all">all</button><button data-filter="capsule">capsule</button><button data-filter="gummies">gummies</button><button data-filter="pdp">pdp</button><button data-filter="native article">native</button><button data-filter="quiz">quiz</button><button data-filter="dead/404">dead</button>
+    </div>
+    <div class="table-wrap"><table class="sortable landing-table"><thead><tr><th>landing page</th><th>product</th><th>class</th><th>cta flow</th><th>final offer</th><th>spend</th><th>roas</th><th>cpp</th><th>cpatc</th><th>cp checkout</th><th>aov</th><th>basis</th></tr></thead><tbody><tr><td><a href="https://mynuora.com/pages/gut-capsule">mynuora.com/pages/gut-capsule</a></td><td>capsule</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>pdp -&gt; checkout/cart</td><td>capsule 1/2/3-bottle subscription ladder</td><td data-sort="2507497.08">$2.51m</td><td data-sort="1.3765">1.38x</td><td data-sort="49.13">$49.13</td><td data-sort="20.32">$20.32</td><td data-sort="40.14">$40.14</td><td data-sort="67.62705068672976">$67.63</td><td>$65 bottle ladder; 1/2/3 bottle choices; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/products/feminine-balance-gummies-1">mynuora.com/products/feminine-balance-gummies-1</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>direct product purchase</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="2137412.57">$2.14m</td><td data-sort="1.1171">1.12x</td><td data-sort="47.81">$47.81</td><td data-sort="19.26">$19.26</td><td data-sort="35.3">$35.30</td><td data-sort="53.40792381506252">$53.41</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/products/gummies">mynuora.com/products/gummies</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>direct product purchase</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="1279437.86">$1.28m</td><td data-sort="0.8888">0.89x</td><td data-sort="63.79">$63.79</td><td data-sort="24.23">$24.23</td><td data-sort="42.66">$42.66</td><td data-sort="56.695257017500126">$56.70</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/products/feminine-balance-gummies-special">mynuora.com/products/feminine-balance-gummies-special</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>direct product purchase</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="790156.53">$790.2k</td><td data-sort="1.0847">1.08x</td><td data-sort="47.75">$47.75</td><td data-sort="16.58">$16.58</td><td data-sort="26.42">$26.42</td><td data-sort="51.796855019036684">$51.80</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/gummies-1">mynuora.com/pages/gummies-1</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>page-based pdp -&gt; checkout/cart</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="211274.3">$211.3k</td><td data-sort="1.0228">1.02x</td><td data-sort="54.37">$54.37</td><td data-sort="20.25">$20.25</td><td data-sort="43.87">$43.87</td><td data-sort="55.607660833762225">$55.61</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/">mynuora.com/</a></td><td>gummies</td><td><span class="dot" style="background:#788C5D"></span>homepage</td><td>homepage -&gt; product/page cta</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="178364.32">$178.4k</td><td data-sort="1.069">1.07x</td><td data-sort="50.95">$50.95</td><td data-sort="21.96">$21.96</td><td data-sort="31.68">$31.68</td><td data-sort="54.461479577263646">$54.46</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/nuora-feminine-gummies-lprb">mynuora.com/pages/nuora-feminine-gummies-lprb</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>page-based pdp -&gt; checkout/cart</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="32074.92">$32.1k</td><td data-sort="0.827">0.83x</td><td data-sort="67.81">$67.81</td><td data-sort="26.91">$26.91</td><td data-sort="49.57">$49.57</td><td data-sort="56.078964059196615">$56.08</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/are-moisture-products-scams">mynuora.com/pages/are-moisture-products-scams</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>native article -&gt; offer/quiz</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="16996.84">$17.0k</td><td data-sort="1.5653">1.57x</td><td data-sort="39.53">$39.53</td><td data-sort="11.15">$11.15</td><td data-sort="30.24">$30.24</td><td data-sort="61.87441860465116">$61.87</td><td>native article routes into the same gummies subscription/bundle offer</td></tr><tr><td><a href="https://news.tophealthinsider.com/articles/5-top-supplements">news.tophealthinsider.com/articles/5-top-supplements</a></td><td>gummies</td><td><span class="dot" style="background:#B04A3F"></span>list article</td><td>article -&gt; external/internal cta unclear</td><td>final offer unverified</td><td data-sort="13838.98">$13.8k</td><td data-sort="1.1742">1.17x</td><td data-sort="48.56">$48.56</td><td data-sort="19.6">$19.60</td><td data-sort="33.35">$33.35</td><td data-sort="57.01747368421052">$57.02</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://tophealthinsider.com/adv-5">tophealthinsider.com/adv-5</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>article -&gt; external/internal cta unclear</td><td>final offer unverified</td><td data-sort="12723.22">$12.7k</td><td data-sort="0.848">0.85x</td><td data-sort="62.37">$62.37</td><td data-sort="37.53">$37.53</td><td data-sort="52.36">$52.36</td><td data-sort="52.88745098039216">$52.89</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://mynuora.com/pages/what-different-vaginal-odor-means">mynuora.com/pages/what-different-vaginal-odor-means</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>native article -&gt; quiz/offer</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="9645.57">$9.6k</td><td data-sort="2.171">2.17x</td><td data-sort="27.96">$27.96</td><td data-sort="8.98">$8.98</td><td data-sort="16.77">$16.77</td><td data-sort="60.697014492753624">$60.70</td><td>native article routes into the same gummies subscription/bundle offer</td></tr><tr><td><a href="https://mynuora.com/pages/nuora-bloating-quiz">mynuora.com/pages/nuora-bloating-quiz</a></td><td>capsule</td><td><span class="dot" style="background:#517B82"></span>quiz</td><td>quiz -&gt; pdp/offer</td><td>capsule 1/2/3-bottle subscription ladder</td><td data-sort="4291.99">$4.3k</td><td data-sort="1.5318">1.53x</td><td data-sort="42.08">$42.08</td><td data-sort="12.55">$12.55</td><td data-sort="24.53">$24.53</td><td data-sort="64.45421568627451">$64.45</td><td>quiz routes into the same capsule subscription/bundle offer</td></tr><tr><td><a href="https://mynuora.com/pages/pasta-garlic-bread-and-a-glass-of-red">mynuora.com/pages/pasta-garlic-bread-and-a-glass-of-red</a></td><td>capsule</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>native article -&gt; offer</td><td>capsule 1/2/3-bottle subscription ladder</td><td data-sort="4037.48">$4.0k</td><td data-sort="1.7307">1.73x</td><td data-sort="37.38">$37.38</td><td data-sort="15.12">$15.12</td><td data-sort="26.92">$26.92</td><td data-sort="64.70009259259258">$64.70</td><td>native article routes into the same capsule subscription/bundle offer</td></tr><tr><td><a href="https://tophealthinsider.com/adv-3">tophealthinsider.com/adv-3</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>article -&gt; external/internal cta unclear</td><td>final offer unverified</td><td data-sort="3999.78">$4.0k</td><td data-sort="0.8495">0.85x</td><td data-sort="62.5">$62.50</td><td data-sort="23.95">$23.95</td><td data-sort="57.97">$57.97</td><td data-sort="53.091875">$53.09</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://mynuora.com/pages/feminine-gummies-3">mynuora.com/pages/feminine-gummies-3</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>page-based pdp -&gt; checkout/cart</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="3975.93">$4.0k</td><td data-sort="1.2043">1.20x</td><td data-sort="44.18">$44.18</td><td data-sort="16.36">$16.36</td><td data-sort="28.81">$28.81</td><td data-sort="53.202444444444446">$53.20</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/gut-capsule-2">mynuora.com/pages/gut-capsule-2</a></td><td>capsule</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>pdp -&gt; checkout/cart</td><td>capsule 1/2/3-bottle subscription ladder</td><td data-sort="3285.54">$3.3k</td><td data-sort="1.0584">1.06x</td><td data-sort="60.84">$60.84</td><td data-sort="20.28">$20.28</td><td data-sort="45.01">$45.01</td><td data-sort="64.3962962962963">$64.40</td><td>$65 bottle ladder; 1/2/3 bottle choices; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/nuora-quiz-funnel">mynuora.com/pages/nuora-quiz-funnel</a></td><td>gummies</td><td><span class="dot" style="background:#517B82"></span>quiz</td><td>quiz -&gt; pdp/offer</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="3121.31">$3.1k</td><td data-sort="0.7794">0.78x</td><td data-sort="70.94">$70.94</td><td data-sort="27.87">$27.87</td><td data-sort="52.9">$52.90</td><td data-sort="55.28886363636364">$55.29</td><td>quiz routes into the same gummies subscription/bundle offer</td></tr><tr><td><a href="https://mynuora.com/pages/gummies-t">mynuora.com/pages/gummies-t</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>page-based pdp -&gt; checkout/cart</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="2583.27">$2.6k</td><td data-sort="0.9667">0.97x</td><td data-sort="58.71">$58.71</td><td data-sort="25.33">$25.33</td><td data-sort="31.5">$31.50</td><td data-sort="56.753409090909095">$56.75</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/10-reasons-women-choose-nuora">mynuora.com/pages/10-reasons-women-choose-nuora</a></td><td>gummies</td><td><span class="dot" style="background:#87867F"></span>dead/404</td><td>unavailable destination</td><td>no selectable offer: dead destination</td><td data-sort="2200.23">$2.2k</td><td data-sort="1.4919">1.49x</td><td data-sort="40.74">$40.74</td><td data-sort="13.84">$13.84</td><td data-sort="30.56">$30.56</td><td data-sort="60.788148148148146">$60.79</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://mynuora.com/pages/probiotics-might-be-a-scam">mynuora.com/pages/probiotics-might-be-a-scam</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>native article -&gt; product/page cta</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="1946.49">$1.9k</td><td data-sort="1.2608">1.26x</td><td data-sort="47.48">$47.48</td><td data-sort="22.63">$22.63</td><td data-sort="47.48">$47.48</td><td data-sort="59.85853658536585">$59.86</td><td>native article routes into the same gummies subscription/bundle offer</td></tr><tr><td><a href="https://tophealthinsider.com/adv-3v2">tophealthinsider.com/adv-3v2</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>article -&gt; external/internal cta unclear</td><td>final offer unverified</td><td data-sort="1836.77">$1.8k</td><td data-sort="1.0144">1.01x</td><td data-sort="59.25">$59.25</td><td data-sort="27.41">$27.41</td><td data-sort="47.1">$47.10</td><td data-sort="60.10322580645161">$60.10</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://news.tophealthinsider.com/articles/scientist-discovery-biofilm">news.tophealthinsider.com/articles/scientist-discovery-biofilm</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>article -&gt; external/internal cta unclear</td><td>final offer unverified</td><td data-sort="1688.88">$1.7k</td><td data-sort="0.9854">0.99x</td><td data-sort="56.3">$56.30</td><td data-sort="31.28">$31.28</td><td data-sort="28.63">$28.63</td><td data-sort="55.475">$55.48</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://mynuora.com/pages/i-thought-it-was-normal">mynuora.com/pages/i-thought-it-was-normal</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>page-based pdp -&gt; checkout/cart</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="1679.81">$1.7k</td><td data-sort="1.0805">1.08x</td><td data-sort="50.9">$50.90</td><td data-sort="24.35">$24.35</td><td data-sort="28.47">$28.47</td><td data-sort="55.00181818181818">$55.00</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td>__unresolved__</td><td>gummies</td><td><span class="dot" style="background:#A9A59B"></span>unresolved</td><td>unresolved</td><td>no verified final offer: unresolved destination</td><td data-sort="1598.26">$1.6k</td><td data-sort="1.1373">1.14x</td><td data-sort="49.95">$49.95</td><td data-sort="31.34">$31.34</td><td data-sort="34.74">$34.74</td><td data-sort="56.8015625">$56.80</td><td>not counted as a distinct customer offer</td></tr><tr><td><a href="https://mynuora.com/pages/feminine-gummies-2">mynuora.com/pages/feminine-gummies-2</a></td><td>gummies</td><td><span class="dot" style="background:#141413"></span>pdp</td><td>page-based pdp -&gt; checkout/cart</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="1584.19">$1.6k</td><td data-sort="1.7033">1.70x</td><td data-sort="31.68">$31.68</td><td data-sort="11.16">$11.16</td><td data-sort="18.64">$18.64</td><td data-sort="53.9656">$53.97</td><td>pack/month ladder; subscription/refill framing</td></tr><tr><td><a href="https://mynuora.com/pages/forbidden-practice-eliminates-odor-restores-balance-and-reignites-desire">mynuora.com/pages/forbidden-practice-eliminates-odor-restores-balance-and-reignites-desire</a></td><td>gummies</td><td><span class="dot" style="background:#D97757"></span>native article</td><td>native article -&gt; product/page cta</td><td>gummies 1/2/3-pack subscription ladder</td><td data-sort="1346.89">$1.3k</td><td data-sort="0.7049">0.70x</td><td data-sort="74.83">$74.83</td><td data-sort="12.59">$12.59</td><td data-sort="70.89">$70.89</td><td data-sort="52.748333333333335">$52.75</td><td>native article routes into the same gummies subscription/bundle offer</td></tr></tbody></table></div>
+  </section>
+
+  <section id="audit">
+    <div class="sec-head"><span class="idx">06</span><h2>data and url audit</h2></div>
+    <div class="grid">
+      <article class="panel span6"><h3>coverage</h3><p>raw rows: <b>56,071</b>. spend-positive ads: <b>2,303</b>. cache join: <b>2,303/2,303</b>.</p><p>raw db spend: <b>$7.24m</b>. live meta guardrail: <b>$7.24m</b>. delta: <b>$19.14</b>.</p></article>
+      <article class="panel span6"><h3>text ad url recovery</h3><p>missing-link text ads attempted: <b>366</b>. resolved from comments: <b>361</b>. unresolved text spend: <b>$822.16</b>.</p><div class="table-box"><table class="sortable "><thead><tr><th>ad id</th><th>spend</th><th>reason</th><th>comments checked</th></tr></thead><tbody><tr><td>120239925498100355</td><td data-sort="453.49">$453.49</td><td>no_allowed_destination_url_found</td><td>64</td></tr><tr><td>120239538587640355</td><td data-sort="161.02">$161.02</td><td>no_allowed_destination_url_found</td><td>32</td></tr><tr><td>120239501799650355</td><td data-sort="120.61">$120.61</td><td>no_allowed_destination_url_found</td><td>32</td></tr><tr><td>120238082968060355</td><td data-sort="85.96">$85.96</td><td>no_allowed_destination_url_found</td><td>18</td></tr><tr><td>120241672772690355</td><td data-sort="1.08">$1.08</td><td>no_allowed_destination_url_found</td><td>0</td></tr></tbody></table></div></article>
+    </div>
+    <p class="source-note">url rule: spend is grouped by actual creative/comment destination, not ad naming conventions. offer reads use the USA storefront state.</p>
+  </section>
+</main>
+
+<script>
+function cellValue(row, index) {
+  const cell = row.children[index];
+  return cell ? (cell.dataset.sort || cell.innerText).trim() : "";
+}
+document.querySelectorAll("table.sortable th").forEach((th) => {
+  th.addEventListener("click", () => {
+    const index = Array.from(th.parentElement.children).indexOf(th);
+    const table = th.closest("table");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const dir = th.dataset.dir === "asc" ? "desc" : "asc";
+    table.querySelectorAll("th").forEach(h => h.dataset.dir = "");
+    th.dataset.dir = dir;
+    rows.sort((a, b) => {
+      const av = cellValue(a, index);
+      const bv = cellValue(b, index);
+      const an = Number(av.replace(/[$,xmk,%]/g, ""));
+      const bn = Number(bv.replace(/[$,xmk,%]/g, ""));
+      const cmp = (!Number.isNaN(an) && !Number.isNaN(bn)) ? an - bn : av.localeCompare(bv);
+      return dir === "asc" ? cmp : -cmp;
+    });
+    rows.forEach(r => tbody.appendChild(r));
+  });
+});
+const search = document.getElementById("pageSearch");
+const buttons = document.querySelectorAll(".controls button");
+function applyFilter() {
+  const q = (search.value || "").toLowerCase();
+  const active = document.querySelector(".controls button.active").dataset.filter;
+  document.querySelectorAll(".landing-table tbody tr").forEach(row => {
+    const text = row.innerText.toLowerCase();
+    const product = (row.children[1]?.innerText || "").toLowerCase().trim();
+    const klass = (row.children[2]?.innerText || "").toLowerCase().trim();
+    const passSearch = !q || text.includes(q);
+    const passButton = active === "all" || product === active || klass === active;
+    row.style.display = passSearch && passButton ? "" : "none";
+  });
+}
+search.addEventListener("input", applyFilter);
+buttons.forEach(btn => btn.addEventListener("click", () => {
+  buttons.forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  applyFilter();
+}));
+</script>
+</body>
+</html>
