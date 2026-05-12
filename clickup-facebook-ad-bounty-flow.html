@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>clickup to facebook launch flow</title>
+  <meta name="description" content="visual breakdown of the clickup to facebook ad bounty launch automation" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f2ec;
+      --ink: #171717;
+      --muted: #5d5a52;
+      --line: #222;
+      --panel: #fffdf6;
+      --green: #1f7a4d;
+      --blue: #1f5f9f;
+      --red: #d94a2b;
+      --yellow: #f3c74d;
+      --shadow: 6px 6px 0 #171717;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Archivo", sans-serif;
+      background:
+        linear-gradient(90deg, rgba(23, 23, 23, .055) 1px, transparent 1px),
+        linear-gradient(rgba(23, 23, 23, .055) 1px, transparent 1px),
+        var(--bg);
+      background-size: 28px 28px;
+    }
+
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 34px 0 44px;
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero,
+    .fact,
+    .node,
+    .mini,
+    .footer {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 24px;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .label {
+      font: 600 12px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 16px 0 0;
+      max-width: 760px;
+      font-size: clamp(38px, 7vw, 86px);
+      line-height: .88;
+      letter-spacing: -.035em;
+      text-transform: lowercase;
+    }
+
+    .hero p,
+    .fact p,
+    .node p,
+    .mini p,
+    .footer p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .fact {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .big-status {
+      align-self: start;
+      display: inline-flex;
+      width: fit-content;
+      padding: 10px 12px;
+      border: 2px solid var(--line);
+      background: var(--green);
+      color: white;
+      font: 700 13px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      box-shadow: 3px 3px 0 var(--line);
+    }
+
+    .map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+      margin: 24px 0 20px;
+    }
+
+    .node {
+      min-height: 190px;
+      padding: 18px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .node::after {
+      content: "->";
+      position: absolute;
+      right: -31px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--line);
+      background: var(--yellow);
+      display: grid;
+      place-items: center;
+      font: 900 18px/1 "IBM Plex Mono", monospace;
+      box-shadow: 3px 3px 0 var(--line);
+    }
+
+    .node:nth-child(4)::after,
+    .node:nth-child(8)::after { display: none; }
+
+    .num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--line);
+      background: white;
+      font: 700 13px/1 "IBM Plex Mono", monospace;
+      box-shadow: 3px 3px 0 var(--line);
+    }
+
+    .node h2 {
+      margin: 18px 0 8px;
+      font-size: 25px;
+      line-height: .96;
+      letter-spacing: -.02em;
+      text-transform: lowercase;
+    }
+
+    .node p {
+      font: 500 14px/1.35 "IBM Plex Mono", monospace;
+    }
+
+    .node[data-tone="clickup"] { background: #fff8df; }
+    .node[data-tone="api"] { background: #eaf2ff; }
+    .node[data-tone="ai"] { background: #e9f7ef; }
+    .node[data-tone="fb"] { background: #fbeee8; }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .mini {
+      padding: 18px;
+      min-height: 150px;
+    }
+
+    .mini h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      line-height: 1;
+      text-transform: lowercase;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      border: 2px solid var(--line);
+      padding: 7px 9px;
+      background: white;
+      font: 600 12px/1 "IBM Plex Mono", monospace;
+      box-shadow: 2px 2px 0 var(--line);
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .footer strong {
+      color: var(--green);
+    }
+
+    @media (max-width: 980px) {
+      .top,
+      .bottom { grid-template-columns: 1fr; }
+      .map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .node:nth-child(2)::after,
+      .node:nth-child(6)::after {
+        display: none;
+      }
+      .node:nth-child(4)::after {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 620px) {
+      main { width: min(100vw - 22px, 1180px); padding-top: 18px; }
+      .hero { min-height: 180px; padding: 18px; }
+      .map { grid-template-columns: 1fr; gap: 14px; }
+      .node { min-height: 155px; }
+      .node::after {
+        content: "down";
+        right: auto;
+        left: 18px;
+        top: auto;
+        bottom: -29px;
+        transform: none;
+        width: 72px;
+        height: 30px;
+        font-size: 11px;
+      }
+      .node:nth-child(2)::after,
+      .node:nth-child(4)::after,
+      .node:nth-child(6)::after {
+        display: grid;
+      }
+      .footer { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="top">
+      <div class="hero">
+        <div>
+          <div class="label">clickup -> facebook / ad bounty agency</div>
+          <h1>ready to launch means the machine launches it.</h1>
+        </div>
+        <p>agency approves creative in clickup. our app reads the task, builds the facebook launch package, creates ads, logs the result, and moves the task forward.</p>
+      </div>
+
+      <aside class="fact">
+        <div class="big-status">production verified</div>
+        <p><strong>trigger:</strong> clickup status becomes <strong>ready to launch</strong></p>
+        <p><strong>result:</strong> facebook adset + ads created as <strong>active</strong></p>
+        <p><strong>cleanup:</strong> clickup task moves to <strong>learning</strong></p>
+      </aside>
+    </section>
+
+    <section class="map" aria-label="automation flow">
+      <article class="node" data-tone="clickup">
+        <div class="num">01</div>
+        <div>
+          <h2>agency task</h2>
+          <p>clickup task has creative folder, task name, and launch status.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="clickup">
+        <div class="num">02</div>
+        <div>
+          <h2>status flips</h2>
+          <p>agency sets task to ready to launch. no human launcher needed.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="api">
+        <div class="num">03</div>
+        <div>
+          <h2>webhook hits api</h2>
+          <p>clickup sends event to our production webhook endpoint.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="api">
+        <div class="num">04</div>
+        <div>
+          <h2>worker job</h2>
+          <p>api queues a background job so uploads and checks can run safely.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="api">
+        <div class="num">05</div>
+        <div>
+          <h2>inputs locked</h2>
+          <p>worker reads clickup + drive, ignores archive folders, builds one adset plan.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="ai">
+        <div class="num">06</div>
+        <div>
+          <h2>ai packet</h2>
+          <p>gemini describes the creative. claude writes 2 texts + 2 headlines.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="fb">
+        <div class="num">07</div>
+        <div>
+          <h2>facebook push</h2>
+          <p>system creates one adset and one active ad per direct media asset.</p>
+        </div>
+      </article>
+
+      <article class="node" data-tone="clickup">
+        <div class="num">08</div>
+        <div>
+          <h2>loop closes</h2>
+          <p>ids are stored, clickup gets a comment, task moves to learning.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="bottom">
+      <article class="mini">
+        <h3>source of truth</h3>
+        <p>clickup status triggers the run. media buying config controls campaign, page, url, cta, and template adset.</p>
+        <div class="chips">
+          <span class="chip">clickup</span>
+          <span class="chip">drive</span>
+          <span class="chip">media buying db</span>
+        </div>
+      </article>
+
+      <article class="mini">
+        <h3>facebook shape</h3>
+        <p>one task becomes one adset. each direct creative file becomes one active facebook ad.</p>
+        <div class="chips">
+          <span class="chip">1 task</span>
+          <span class="chip">1 adset</span>
+          <span class="chip">n ads</span>
+        </div>
+      </article>
+
+      <article class="mini">
+        <h3>safety rail</h3>
+        <p>if the same task fires again after launch, it does not create another adset. it self-heals back to learning.</p>
+        <div class="chips">
+          <span class="chip">idempotent</span>
+          <span class="chip">recoverable</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="footer">
+      <p><strong>verified live:</strong> task 86b9wj0tb launched active, webhook replay did not duplicate facebook objects.</p>
+      <p>adset 120243231960180355</p>
+    </section>
+  </main>
+</body>
+</html>
