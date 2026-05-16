@@ -95,9 +95,9 @@
     <div class="hero">
       <div class="eyebrow">nuora finance / product price margins / maxdropshipping</div>
       <h1>price points with real margin attached.</h1>
-      <p class="intro">a three-day operating view of what customers actually paid, how many orders landed at each price, the supplier cost recorded by maxdropshipping, and the margin on that specific price. every row is sized against the last 30 days of order volume.</p>
+      <p class="intro">a three-day operating view of what customers actually paid, consolidated into simple product-size rows first, with the full price-level detail kept underneath for drilldown.</p>
       <div class="note">2026-05-14 → 2026-05-16 · europe/zurich · 474 price rows</div>
-      <nav><a href="#summary">summary</a><a href="#products">product mix</a><a href="#prices">price table</a><a href="#method">method</a></nav>
+      <nav><a href="#summary">summary</a><a href="#consolidated">consolidated</a><a href="#products">product mix</a><a href="#prices">price table</a><a href="#method">method</a></nav>
     </div>
     <aside class="side" id="summary">
       <div class="metric"><b>5,418</b><span>orders in report window</span><small>2026-05-14 through 2026-05-16</small></div>
@@ -111,7 +111,7 @@
       <article class="panel span7">
         <h3>what changed hands</h3>
         <div class="split">
-          <div class="small-card"><b>474</b><span>distinct product / price rows</span></div>
+          <div class="small-card"><b id="consolidatedCount">-</b><span>simple product-size rows</span></div>
           <div class="small-card"><b>77.3%</b><span>weighted margin across rows</span></div>
           <div class="small-card"><b>5,041</b><span>maxdrop rows matched</span></div>
           <div class="small-card"><b>377</b><span>orders missing matched cogs</span></div>
@@ -119,13 +119,28 @@
       </article>
       <article class="panel span5">
         <h3>read this carefully</h3>
-        <p>registered price is the actual paid order amount allocated to line items. for single-item orders it is the order's current total. supplier cost is averaged per order inside the same product / variant / quantity / price group.</p>
+        <p>the first table groups every price point into product size: one, two, three, and larger bundles. weighted price is weighted by order count. margin is calculated from total paid revenue minus total supplier cost.</p>
       </article>
     </div>
   </section>
 
+  <section id="consolidated">
+    <div class="section-title"><code>01</code><h2>consolidated weighted view</h2></div>
+    <article class="panel span12">
+      <div class="table-wrap">
+        <table id="consolidatedTable">
+          <thead><tr>
+            <th>product</th><th>size</th><th>orders</th><th>% of l30 orders</th><th>weighted paid price</th><th>supplier / order</th><th>supplier total</th><th>weighted margin</th><th>price points rolled up</th><th>cogs coverage</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="footer-note">sizes are normalized from variants like 1 pack, 1 month, 1 bottle, 2 bottles, 3 months, and 3 packs. bundle rows above 3 are grouped as 4+.</div>
+    </article>
+  </section>
+
   <section id="products">
-    <div class="section-title"><code>01</code><h2>product mix by orders</h2></div>
+    <div class="section-title"><code>02</code><h2>product mix by orders</h2></div>
     <div class="grid">
       <article class="panel span12">
         <div class="bars" id="productBars"></div>
@@ -134,7 +149,7 @@
   </section>
 
   <section id="prices">
-    <div class="section-title"><code>02</code><h2>all product / price rows</h2></div>
+    <div class="section-title"><code>03</code><h2>all product / price rows</h2></div>
     <article class="panel span12">
       <div class="controls">
         <input id="search" type="search" placeholder="search product, variant, price">
@@ -157,7 +172,7 @@
   </section>
 
   <section id="method">
-    <div class="section-title"><code>03</code><h2>method</h2></div>
+    <div class="section-title"><code>04</code><h2>method</h2></div>
     <div class="grid">
       <article class="panel span4"><h3>shopify</h3><p>orders came from <span class="mono">raw_shopify_orders.processed_at</span>, converted into europe/zurich business dates. line items came from <span class="mono">raw_shopify_line_items</span>.</p></article>
       <article class="panel span4"><h3>registered price</h3><p>actual customer-paid line price uses <span class="mono">current_total_cents</span>. multi-line orders are allocated by line gross weight.</p></article>
@@ -174,6 +189,55 @@ let preset = 'all';
 const fmtMoney = cents => '$' + (cents / 100).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 const fmtPct = n => Number(n).toFixed(2) + '%';
 function marginClass(n){ return n < 60 ? 'bad' : n < 72 ? 'warn' : 'good'; }
+function normalizedSize(row){
+  const text = String(row.variant || '').toLowerCase();
+  const match = text.match(/\b([1-9]\d*)\s*(pack|packs|month|months|bottle|bottles)\b/);
+  const size = match ? Number(match[1]) : Number(row.quantity || 0);
+  if (!size || size < 1) return { key: 'unknown', label: 'unknown' };
+  if (size >= 4) return { key: '4+', label: '4+ bottles / packs' };
+  return { key: String(size), label: size === 1 ? '1 bottle / pack' : size + ' bottles / packs' };
+}
+function consolidatedRows(){
+  const groups = new Map();
+  for (const row of rows) {
+    const size = normalizedSize(row);
+    const key = row.product + '|' + size.key;
+    const group = groups.get(key) || {
+      product: row.product,
+      sizeKey: size.key,
+      sizeLabel: size.label,
+      orders: 0,
+      pctL30: 0,
+      revenueCents: 0,
+      supplierTotalCents: 0,
+      cogsMatched: 0,
+      refunded: 0,
+      pricePoints: 0
+    };
+    group.orders += row.orders;
+    group.pctL30 += row.pctL30;
+    group.revenueCents += row.priceCents * row.orders;
+    group.supplierTotalCents += row.supplierTotalCents;
+    group.cogsMatched += row.cogsMatched;
+    group.refunded += row.refunded;
+    group.pricePoints += 1;
+    groups.set(key, group);
+  }
+  const sizeOrder = { '1': 1, '2': 2, '3': 3, '4+': 4, unknown: 5 };
+  return [...groups.values()].map(group => ({
+    ...group,
+    weightedPriceCents: group.orders ? Math.round(group.revenueCents / group.orders) : 0,
+    supplierAvgCents: group.orders ? Math.round(group.supplierTotalCents / group.orders) : 0,
+    margin: group.revenueCents ? ((group.revenueCents - group.supplierTotalCents) / group.revenueCents) * 100 : 0,
+    cogsCoverage: group.orders ? (group.cogsMatched / group.orders) * 100 : 0
+  })).sort((a, b) => b.orders - a.orders || a.product.localeCompare(b.product) || sizeOrder[a.sizeKey] - sizeOrder[b.sizeKey]);
+}
+function renderConsolidated(){
+  const data = consolidatedRows();
+  const tbody = document.querySelector('#consolidatedTable tbody');
+  tbody.innerHTML = data.map(r => '<tr><td>'+escapeHtml(r.product)+'</td><td>'+escapeHtml(r.sizeLabel)+'</td><td>'+r.orders.toLocaleString('en-US')+'</td><td>'+fmtPct(r.pctL30)+'</td><td>'+fmtMoney(r.weightedPriceCents)+'</td><td>'+fmtMoney(r.supplierAvgCents)+'</td><td>'+fmtMoney(r.supplierTotalCents)+'</td><td><span class="pill '+marginClass(r.margin)+'">'+fmtPct(r.margin)+'</span></td><td>'+r.pricePoints.toLocaleString('en-US')+'</td><td>'+fmtPct(r.cogsCoverage)+'</td></tr>').join('');
+  document.getElementById('consolidatedCount').textContent = data.length.toLocaleString('en-US');
+}
 function renderBars(){
   const root = document.getElementById('productBars');
   const max = Math.max(...products.map(p => p.orders));
@@ -225,7 +289,7 @@ function bind(){
     renderTable();
   }));
 }
-renderBars(); populateFilter(); bind(); renderTable();
+renderConsolidated(); renderBars(); populateFilter(); bind(); renderTable();
 </script>
 </body>
 </html>
