@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nuora ClickUp Naming Conventions</title>
+  <meta name="description" content="public documentation for Nuora ClickUp to Facebook naming conventions and MobyBots tracking attribution onboarding" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --ink: #181713;
+      --muted: #646057;
+      --line: #181713;
+      --white: #fffdf7;
+      --green: #236c4d;
+      --blue: #245f9f;
+      --red: #c9472b;
+      --yellow: #efc84a;
+      --mint: #dff1e7;
+      --peach: #ffe0cc;
+      --sky: #dfeefe;
+      --shadow: 6px 6px 0 var(--ink);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Archivo", sans-serif;
+      background:
+        linear-gradient(90deg, rgba(24, 23, 19, .055) 1px, transparent 1px),
+        linear-gradient(rgba(24, 23, 19, .055) 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+    }
+
+    a { color: inherit; }
+
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    .hero,
+    .panel,
+    .token,
+    .flow-step,
+    .example,
+    .footer {
+      background: var(--white);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      min-height: 410px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .label {
+      font: 700 12px/1 "IBM Plex Mono", monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 18px 0 20px;
+      font-size: clamp(42px, 8vw, 92px);
+      line-height: .87;
+      letter-spacing: 0;
+      text-transform: lowercase;
+    }
+
+    .dek {
+      max-width: 740px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.25;
+    }
+
+    .hero-card {
+      padding: 18px;
+      background: var(--mint);
+      border: 2px solid var(--line);
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .stamp {
+      width: fit-content;
+      padding: 10px 12px;
+      background: var(--green);
+      color: white;
+      border: 2px solid var(--line);
+      box-shadow: 3px 3px 0 var(--line);
+      font: 800 13px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+    }
+
+    .hero-card code {
+      display: block;
+      padding: 14px;
+      background: rgba(255,255,255,.72);
+      border: 2px solid var(--line);
+      font: 600 15px/1.45 "IBM Plex Mono", monospace;
+      overflow-wrap: anywhere;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 26px;
+    }
+
+    nav a {
+      text-decoration: none;
+      padding: 10px 12px;
+      background: var(--white);
+      border: 2px solid var(--line);
+      box-shadow: 3px 3px 0 var(--line);
+      font: 700 12px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+    }
+
+    section { margin: 28px 0; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 68px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .num {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      background: var(--yellow);
+      border: 2px solid var(--line);
+      box-shadow: 4px 4px 0 var(--line);
+      font: 900 20px/1 "IBM Plex Mono", monospace;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(30px, 4.5vw, 54px);
+      line-height: .92;
+      letter-spacing: 0;
+      text-transform: lowercase;
+    }
+
+    .section-head p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.35;
+      max-width: 820px;
+    }
+
+    .grid-2,
+    .grid-3 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .panel {
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .panel h3,
+    .token h3,
+    .flow-step h3,
+    .example h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0;
+      text-transform: lowercase;
+    }
+
+    .panel p,
+    .token p,
+    .flow-step p,
+    .example p,
+    li {
+      color: var(--muted);
+      line-height: 1.42;
+      font-size: 15px;
+    }
+
+    .mono,
+    code {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .formula {
+      padding: 18px;
+      background: var(--ink);
+      color: white;
+      border: 2px solid var(--line);
+      font: 700 15px/1.55 "IBM Plex Mono", monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .formula span { color: var(--yellow); }
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .token {
+      padding: 16px;
+      min-height: 170px;
+    }
+
+    .token:nth-child(1),
+    .token:nth-child(5) { background: var(--sky); }
+    .token:nth-child(2),
+    .token:nth-child(6) { background: var(--mint); }
+    .token:nth-child(3),
+    .token:nth-child(7) { background: var(--peach); }
+    .token:nth-child(4),
+    .token:nth-child(8) { background: #fff3bc; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .flow-step {
+      padding: 16px;
+      position: relative;
+      min-height: 190px;
+    }
+
+    .flow-step::after {
+      content: "->";
+      position: absolute;
+      right: -29px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      background: var(--yellow);
+      border: 2px solid var(--line);
+      box-shadow: 3px 3px 0 var(--line);
+      font: 900 17px/1 "IBM Plex Mono", monospace;
+      z-index: 2;
+    }
+
+    .flow-step:last-child::after { display: none; }
+
+    .examples {
+      display: grid;
+      gap: 14px;
+    }
+
+    .example {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 155px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .batch {
+      width: fit-content;
+      padding: 9px 10px;
+      background: var(--blue);
+      color: white;
+      border: 2px solid var(--line);
+      box-shadow: 3px 3px 0 var(--line);
+      font: 800 14px/1 "IBM Plex Mono", monospace;
+    }
+
+    .name-line {
+      padding: 12px;
+      background: rgba(24,23,19,.045);
+      border: 1px solid rgba(24,23,19,.18);
+      font: 600 13px/1.45 "IBM Plex Mono", monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      background: white;
+      font: 700 11px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow-wrap: anywhere;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      border: 1px solid rgba(24,23,19,.24);
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    th {
+      background: var(--ink);
+      color: white;
+      font: 700 12px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+    }
+
+    td code {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .callout {
+      padding: 18px;
+      background: var(--peach);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .callout strong {
+      color: var(--red);
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font: 600 13px/1.35 "IBM Plex Mono", monospace;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .grid-2,
+      .grid-3,
+      .token-grid,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-step::after { display: none; }
+
+      .example {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      main { width: min(100% - 20px, 1180px); }
+      .hero { padding: 18px; min-height: auto; }
+      .section-head { grid-template-columns: 1fr; }
+      th, td { padding: 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <div class="hero-copy">
+        <div>
+          <div class="label">Nuora x MobyBots attribution onboarding</div>
+          <h1>clickup naming conventions</h1>
+          <p class="dek">A public map of how Nuora in-house ClickUp ad batches become Facebook ad set names, ad names, and tracking tokens for direct-response attribution.</p>
+        </div>
+        <div class="tags" aria-label="document status">
+          <span class="tag">verified from runtime code</span>
+          <span class="tag">checked against recent approved batches</span>
+          <span class="tag">facebook + clickup compatible</span>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="canonical pattern">
+        <div class="stamp">canonical live shape</div>
+        <code>B0405--Nuora Feminine Gummies--Video--Iteration--Fishy odor--Solution Aware--Parasites--Ai Avatar--CS:Ollie--V:Karla Calderon Solis, Ollie Trott--https://mynuora.com/pages/feminine-gummies-3--V1</code>
+        <p>The ad set is the batch/task name. Each ad appends the asset variant.</p>
+      </aside>
+    </header>
+
+    <nav aria-label="page sections">
+      <a href="#summary">summary</a>
+      <a href="#grammar">grammar</a>
+      <a href="#flow">runtime flow</a>
+      <a href="#examples">recent batches</a>
+      <a href="#mobybots">mobybots contract</a>
+      <a href="#rules">operator rules</a>
+    </nav>
+
+    <section id="summary">
+      <div class="section-head">
+        <div class="num">01</div>
+        <div>
+          <h2>executive summary</h2>
+          <p>Nuora in-house launches use one long, double-dash-delimited name as the shared identity spine across ClickUp, Facebook ad sets, Facebook ads, and tracking attribution.</p>
+        </div>
+      </div>
+      <div class="grid-3">
+        <article class="panel">
+          <h3>batch identity</h3>
+          <p>The first token is the batch id, usually <code>B####</code>. It is the strongest join key for onboarding, reporting, and reconciliation.</p>
+        </article>
+        <article class="panel">
+          <h3>ad set identity</h3>
+          <p>For Nuora in-house ClickUp pushes, the Facebook ad set name is the ClickUp task name, after runtime completion of any missing destination field.</p>
+        </article>
+        <article class="panel">
+          <h3>ad identity</h3>
+          <p>Each Facebook ad uses the ad set name plus a final variant token: <code>--V1</code>, <code>--V2</code>, <code>--V3</code>, or another numbered variant from the asset filename.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="grammar">
+      <div class="section-head">
+        <div class="num">02</div>
+        <div>
+          <h2>name grammar</h2>
+          <p>Tokens are separated by a literal double dash. Do not split on single hyphens because names contain natural language, URLs, people names, and strategy labels.</p>
+        </div>
+      </div>
+      <div class="formula">
+        <span>ad set:</span> B####--Product--AdType--Strategy--Problem/Desire--Awareness--Mechanism--Format--CS:Copy Strategist--V:Voice/Talent--Destination
+        <br><br>
+        <span>ad:</span> ad set name--V#
+      </div>
+      <div class="token-grid" style="margin-top:16px">
+        <article class="token">
+          <h3>batch</h3>
+          <p><code>B0405</code>. Primary batch key. Use this as the most stable grouping key across platforms.</p>
+        </article>
+        <article class="token">
+          <h3>product</h3>
+          <p><code>Nuora Feminine Gummies</code> or <code>Nuora Gut Capsule</code>. Maps attribution back to product line.</p>
+        </article>
+        <article class="token">
+          <h3>ad type</h3>
+          <p>Usually <code>Video</code> for current in-house launches. Other systems may use <code>Static</code> or <code>Text</code>.</p>
+        </article>
+        <article class="token">
+          <h3>strategy</h3>
+          <p><code>Ideation</code>, <code>Iteration</code>, or <code>Imitation</code>. Tells whether the batch is new, evolved, or modeled after a known structure.</p>
+        </article>
+        <article class="token">
+          <h3>problem or desire</h3>
+          <p>Examples: <code>Fishy odor</code>, <code>Bloating</code>, <code>Pooch/Weight</code>, <code>More oral sex</code>. This is the market pain or outcome.</p>
+        </article>
+        <article class="token">
+          <h3>awareness</h3>
+          <p><code>Unaware</code>, <code>Problem Aware</code>, <code>Solution Aware</code>, or <code>Product Aware</code>. Useful for funnel-stage reporting.</p>
+        </article>
+        <article class="token">
+          <h3>mechanism + format</h3>
+          <p>Mechanism examples: <code>Biofilm</code>, <code>Parasites</code>, <code>Akkermansia + Biofilm</code>. Format examples: <code>Ai Avatar</code>, <code>Broll</code>, <code>Podcast</code>, <code>VSL style</code>.</p>
+        </article>
+        <article class="token">
+          <h3>people + destination</h3>
+          <p><code>CS:</code> marks copy strategist. <code>V:</code> marks voice/talent. The final URL marks the landing destination used for that batch.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="flow">
+      <div class="section-head">
+        <div class="num">03</div>
+        <div>
+          <h2>runtime flow</h2>
+          <p>The naming convention is not just documentation. It is how the launch worker creates, stores, and reconciles Facebook objects.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <article class="flow-step">
+          <div class="label">source</div>
+          <h3>clickup task</h3>
+          <p>The operator-approved ClickUp task contains the canonical batch/task name plus fields for campaign, page, CTA, destination URL, copy, and Drive assets.</p>
+        </article>
+        <article class="flow-step">
+          <div class="label">assets</div>
+          <h3>variant extraction</h3>
+          <p>Asset filenames are scanned for separated variant tokens such as <code>--V1</code>, <code>-v2</code>, <code>_V3</code>, or <code>.V4</code>.</p>
+        </article>
+        <article class="flow-step">
+          <div class="label">facebook</div>
+          <h3>ad set create</h3>
+          <p>The ad set name is generated from the ClickUp task name. If the destination field fills a missing final segment, the live Meta name may include the completed URL.</p>
+        </article>
+        <article class="flow-step">
+          <div class="label">facebook</div>
+          <h3>ad create</h3>
+          <p>One ad is created per variant. The ad name is the ad set name plus the final <code>--V#</code> suffix.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="examples">
+      <div class="section-head">
+        <div class="num">04</div>
+        <div>
+          <h2>recent approved batches</h2>
+          <p>These were checked against recent completed ClickUp pushes and live synced Meta source rows. Timestamp basis: production data inspected on May 19, 2026.</p>
+        </div>
+      </div>
+      <div class="examples">
+        <article class="example">
+          <div>
+            <div class="batch">B0405</div>
+            <div class="tags"><span class="tag">gummies</span><span class="tag">3 ads</span><span class="tag">active</span></div>
+          </div>
+          <div>
+            <h3>fishy odor, solution aware, parasites, ai avatar</h3>
+            <div class="name-line">B0405--Nuora Feminine Gummies--Video--Iteration--Fishy odor--Solution Aware--Parasites--Ai Avatar--CS:Ollie--V:Karla Calderon Solis, Ollie Trott--https://mynuora.com/pages/feminine-gummies-3</div>
+            <p>Ads observed as <code>--V1</code>, <code>--V2</code>, and <code>--V3</code>.</p>
+          </div>
+        </article>
+        <article class="example">
+          <div>
+            <div class="batch">B0390</div>
+            <div class="tags"><span class="tag">capsule</span><span class="tag">3 ads</span><span class="tag">active</span></div>
+          </div>
+          <div>
+            <h3>pooch/weight, product aware, akkermansia + biofilm, podcast</h3>
+            <div class="name-line">B0390--Nuora Gut Capsule--Video--Iteration--Pooch/Weight--Product Aware--Akkermansia + Biofilm--Podcast--CS:Ollie--V:Arthur Oliveira, Ollie Trott--https://mynuora.com/pages/gut-capsule-2</div>
+            <p>Asset filenames used lowercase <code>v1</code>, <code>v2</code>, <code>v3</code>; runtime normalized them to uppercase variant labels.</p>
+          </div>
+        </article>
+        <article class="example">
+          <div>
+            <div class="batch">B0394</div>
+            <div class="tags"><span class="tag">gummies</span><span class="tag">3 ads</span><span class="tag">mixed review</span></div>
+          </div>
+          <div>
+            <h3>ammonia, solution aware, biofilm, reaction ai avatar</h3>
+            <div class="name-line">B0394--Nuora Feminine Gummies--Video--Ideation--Ammonia--Solution Aware--Biofilm--Reaction ai avatar--CS:Ollie--V:Arthur Oliveira, Ollie Trott--https://mynuora.com/pages/what-different-vaginal-odor-means</div>
+            <p>Meta rows showed <code>--V1</code> and <code>--V2</code> active, with <code>--V3</code> disapproved. Naming still remained consistent.</p>
+          </div>
+        </article>
+        <article class="example">
+          <div>
+            <div class="batch">B0403</div>
+            <div class="tags"><span class="tag">capsule</span><span class="tag">3 ads</span><span class="tag">url filled</span></div>
+          </div>
+          <div>
+            <h3>pooch/weight, solution aware, biofilm, ai avatar</h3>
+            <div class="name-line">B0403--Nuora Gut Capsule--Video--Iteration--Pooch/Weight--Solution Aware--Biofilm--Ai Avatar--CS:Ollie--V:Arthur Oliveira, Ollie Trott--https://mynuora.com/pages/gut-capsule-2</div>
+            <p>The stored ClickUp task name had a trailing blank URL segment; the live Meta ad set name included the destination URL.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="mobybots">
+      <div class="section-head">
+        <div class="num">05</div>
+        <div>
+          <h2>mobybots parsing contract</h2>
+          <p>Recommended ingestion rules for a tracking attribution tool. Parse deterministically, keep the raw name, and avoid inventing meaning when a token is absent.</p>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>field</th>
+            <th>source</th>
+            <th>rule</th>
+            <th>example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>raw_adset_name</code></td>
+            <td>facebook ad set name</td>
+            <td>store exactly as received</td>
+            <td><code>B0405--Nuora Feminine Gummies--...</code></td>
+          </tr>
+          <tr>
+            <td><code>raw_ad_name</code></td>
+            <td>facebook ad name</td>
+            <td>store exactly as received</td>
+            <td><code>...--https://mynuora.com/pages/feminine-gummies-3--V1</code></td>
+          </tr>
+          <tr>
+            <td><code>batch_id</code></td>
+            <td>first token</td>
+            <td>match <code>^B[0-9]{4,}$</code>; keep uppercase</td>
+            <td><code>B0405</code></td>
+          </tr>
+          <tr>
+            <td><code>variant</code></td>
+            <td>ad name suffix or asset filename</td>
+            <td>match separated <code>V#</code>; normalize to uppercase</td>
+            <td><code>V1</code></td>
+          </tr>
+          <tr>
+            <td><code>product</code></td>
+            <td>second token</td>
+            <td>map exact token to product line</td>
+            <td><code>Nuora Gut Capsule</code></td>
+          </tr>
+          <tr>
+            <td><code>ad_type</code></td>
+            <td>third token</td>
+            <td>normalize <code>Video</code>, <code>Static</code>, <code>Text</code></td>
+            <td><code>Video</code></td>
+          </tr>
+          <tr>
+            <td><code>strategy</code></td>
+            <td>fourth token</td>
+            <td>preserve label casing for reporting</td>
+            <td><code>Iteration</code></td>
+          </tr>
+          <tr>
+            <td><code>awareness_stage</code></td>
+            <td>awareness token</td>
+            <td>detect known stage values, not fixed position only</td>
+            <td><code>Solution Aware</code></td>
+          </tr>
+          <tr>
+            <td><code>destination_url</code></td>
+            <td>last URL-looking token</td>
+            <td>parse token beginning with <code>http://</code> or <code>https://</code>; keep query params</td>
+            <td><code>https://mynuora.com/pages/gut-capsule-2</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="rules">
+      <div class="section-head">
+        <div class="num">06</div>
+        <div>
+          <h2>operator rules</h2>
+          <p>These rules keep ClickUp, Facebook, and attribution data aligned.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <article class="panel">
+          <h3>do</h3>
+          <ul>
+            <li>Use <code>--</code> between major tokens.</li>
+            <li>Start every batch with a unique <code>B####</code> id.</li>
+            <li>Put a separated variant token in every asset filename: <code>--V1</code>, <code>-v2</code>, <code>_V3</code>, or <code>.V4</code>.</li>
+            <li>Keep destination URLs complete in ClickUp fields before launch.</li>
+            <li>Use the raw Facebook names as the attribution source of truth after launch.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>avoid</h3>
+          <ul>
+            <li>Do not split names on a single dash.</li>
+            <li>Do not infer quality or performance from naming tokens alone.</li>
+            <li>Do not treat missing URLs as proof that the ad had no destination; check the launch fields or live Meta row.</li>
+            <li>Do not overwrite raw names during ingestion. Normalize into separate parsed fields.</li>
+            <li>Do not rely only on ad status. A published ClickUp run can still have a later Meta review change.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="callout" style="margin-top:16px">
+        <p><strong>important:</strong> Nuora also has an autonomous AI naming system that starts with <code>AI####</code>. That is a different architecture. This page documents the in-house ClickUp naming convention for approved ClickUp batches pushed to Facebook.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Nuora ClickUp naming documentation</span>
+      <span>last reviewed: May 19, 2026</span>
+      <span>for MobyBots tracking attribution onboarding</span>
+    </footer>
+  </main>
+</body>
+</html>
